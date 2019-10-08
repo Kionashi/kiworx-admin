@@ -2,7 +2,7 @@
 /*==============================================================
 	Start Sappito custom CSS
 ==============================================================*/
-.btn-create{
+/* .btn-create{
 	float:right;
 }
 
@@ -19,7 +19,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
+} */
 /* 
 .toyo-red{
     color: #c00;
@@ -40,7 +40,7 @@
     color: red;
 } */
 
-.font-18 {
+/* .font-18 {
     font-size: 18px;
 }
 .backspace { 
@@ -53,7 +53,7 @@
 
 .bottom-1{
     margin-bottom: 1em;
-}
+} */
 
 /* .nav.side-menu>li>a, .nav.child_menu>li>a {
     color: black;
