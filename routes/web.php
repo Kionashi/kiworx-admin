@@ -18,6 +18,17 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+//Companies
+Route::get('/companies', 'CompaniesController@index')->name('companies');
+
+//Admin Users
+Route::get('/admin/users', 'AdminUsersController@index')->name('admin/users');
+Route::get('/admin/users/create', 'AdminUsersController@create')->name('admin/users/create');
+Route::post('/admin/users/store', 'AdminUsersController@store')->name('admin/users/store');
+Route::get('/admin/users/edit/{id}', 'AdminUsersController@edit')->name('admin/users/edit');
+Route::post('/admin/users/update', 'AdminUsersController@update')->name('admin/users/update');
+Route::get('/admin/users/details/{id}', 'AdminUsersController@details')->name('admin/users/details');
+Route::get('/admin/users/delete/{id}', 'AdminUsersController@destroy')->name('admin/users/delete');
 
 Route::group(['middleware' => ['auth']], function () {
     //Users
