@@ -9,7 +9,7 @@
 					Admin users <small>List</small>
 				</h2>
 				<ul class="nav navbar-right panel_toolbox">
-					<li><a href="{{route('admin-users/create')}}">nuevo registro <i class="fa fa-plus"></i></a></li>
+					<li><a href="{{route('admin-users/create')}}">Nuevo registro <i class="fa fa-plus"></i></a></li>
 				</ul>
 				<div class="clearfix"></div>
 			</div>
