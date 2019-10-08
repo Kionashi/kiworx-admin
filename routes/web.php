@@ -11,21 +11,24 @@
 |
 */
 
-Route::get('/', 'HomeController@index')->name('home');
-Route::get('/login', 'HomeController@login')->name('login');
+Route::get('/login', 'AuthController@login')->name('login');
+Route::post('/login', 'AuthController@storeSession')->name('login');
+
 //Companies
 Route::get('/companies', 'CompaniesController@index')->name('companies');
 
 //Admin Users
-Route::get('/admin-users', 'AdminUsersController@index')->name('admin-users');
-Route::get('/admin-users/create', 'AdminUsersController@create')->name('admin-users/create');
-Route::post('/admin-users/store', 'AdminUsersController@store')->name('admin-users/store');
-Route::get('/admin-users/edit/{id}', 'AdminUsersController@edit')->name('admin-users/edit');
-Route::post('/admin-users/update', 'AdminUsersController@update')->name('admin-users/update');
-Route::get('/admin-users/details/{id}', 'AdminUsersController@details')->name('admin-users/details');
-Route::get('/admin-users/delete/{id}', 'AdminUsersController@destroy')->name('admin-users/delete');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['admin.auth']], function () {
+    Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/logout', 'AuthController@logout')->name('logout');
+    Route::get('/admin-users', 'AdminUsersController@index')->name('admin-users');
+    Route::get('/admin-users/create', 'AdminUsersController@create')->name('admin-users/create');
+    Route::post('/admin-users/store', 'AdminUsersController@store')->name('admin-users/store');
+    Route::get('/admin-users/edit/{id}', 'AdminUsersController@edit')->name('admin-users/edit');
+    Route::post('/admin-users/update', 'AdminUsersController@update')->name('admin-users/update');
+    Route::get('/admin-users/details/{id}', 'AdminUsersController@details')->name('admin-users/details');
+    Route::get('/admin-users/delete/{id}', 'AdminUsersController@destroy')->name('admin-users/delete');
     //Users
     Route::get('/users', 'UsersController@index')->name('users');
     Route::get('/users/create', 'UsersController@create')->name('users/create');
@@ -34,7 +37,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/users/update', 'UsersController@update')->name('users/update');
     Route::get('/users/details/{id}', 'UsersController@details')->name('users/details');
     Route::get('/users/delete/{id}', 'UsersController@destroy')->name('users/delete');
-    Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout')->name('logout-get');
+//     Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout')->name('logout-get');
     
     //Events
     Route::get('/events', 'EventsController@index')->name('events');
