@@ -40,7 +40,7 @@
           <section class="login_content">
             <form method="POST" action="{{ route('login') }}">
                 @csrf
-                <h1>Toyota App</h1>
+                <h1>{{env('APP_NAME')}}</h1>
                 <div>
                     <input type="email" class="form-control" placeholder="Correo" required=""  @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus/>
                 </div>
