@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use function GuzzleHttp\json_decode;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 
 class AdminUsersController extends Controller
 {
@@ -31,12 +33,14 @@ class AdminUsersController extends Controller
     }
 
     public function store(Request $request){
+        $all = $request->all();
         $name = $request->name;
         $lastname = $request->lastname;
         $email = $request->email;
         $password = $request->password;
         $client = new Client();
         $body = [
+            'all' => $all,
             'name' => $name,
             'lastname' => $lastname,
             'email' => $email,
@@ -54,8 +58,23 @@ class AdminUsersController extends Controller
                 dd($e->getCode());
             }
         $response = json_decode($res->getBody());
-        dd($response);
-        
+        // dd($response);
         return redirect()->route('admin-users');
+    }
+
+    public function details($id){
+        $client = new Client();
+        try{
+            $res = $client->request('GET', env('API_BASE_URL').'admin/users/'.$id);
+        } catch(ClientException $e){
+            dd($e->getCode());
+        } catch(ServerException $e){
+            dd($e->getCode());
+        }
+        $adminUser = json_decode($res->getBody(),true);
+
+        return view("pages.backend.admin-users.details")
+            ->with('adminUser', $adminUser)
+            ;
     }
 }
