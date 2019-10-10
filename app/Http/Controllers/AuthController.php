@@ -50,13 +50,22 @@ class AuthController extends Controller
             // Send http request
             $req = $client->post($url,  ['body' => json_encode($body)]);
             $response = json_decode($req->getBody());
-            
+            $isAdmin = false;
+            foreach ($response->adminUser->role->permissions as $permission ) {
+                if ($permission->code == 'super-admin') {
+                    $isAdmin = true; break;
+                }
+            }
             // Store admin user data in session
             session([
                 'admin.id' => $response->adminUser->id,
                 'admin.name' => $response->adminUser->name,
-                'admin.lastname' => $response->adminUser->lastname
+                'admin.lastname' => $response->adminUser->lastname,
+                'admin.permissions' => $response->adminUser->role->permissions,
+                'admin.isSuperAdmin' => $isAdmin
             ]);
+            
+//             dd(session()->all());
             
             // Redirect to home
             return redirect()->route('home');

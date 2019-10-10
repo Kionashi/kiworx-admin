@@ -26,11 +26,13 @@
 		<h3>General</h3>
 		<ul class="nav side-menu">
 			<li><a href="{{route('home')}}"><i class="fa fa-home"></i> Home</a></li>
+			@if(session('admin.isSuperAdmin'))
 			<li><a><i class="fa fa-edit"></i> Super administrador <span class="fa fa-chevron-down"></span></a>
 				<ul class="nav child_menu">
 					<li><a href="{{route('admin-users')}}">Admin users</a></li>
 				</ul>
 			</li>
+			@endif
 			<li><a><i class="fa fa-desktop"></i> UI Elements <span
 					class="fa fa-chevron-down"></span></a>
 				<ul class="nav child_menu">
