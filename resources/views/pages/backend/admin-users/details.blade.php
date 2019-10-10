@@ -49,6 +49,13 @@
                             <input type="email" id="email" name="email" disabled value="{{$adminUser['email']}}" class="form-control col-md-7 col-xs-12">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Rol <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="text" name="text" disabled value="{{$adminUser['role']['name']}}" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div>
             
                     <div class="ln_solid"></div>
                         <div class="form-group">

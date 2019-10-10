@@ -28,7 +28,11 @@ class AdminUsersController extends Controller
     }
 
     public function create(){
+        $client = new Client();
+        $res = $client->request('GET', env('API_BASE_URL').'admin/user-roles');
+        $roles = json_decode($res->getBody(),true);
         return view("pages.backend.admin-users.create")
+            ->with('roles',$roles)
         ;
     }
 
@@ -38,6 +42,8 @@ class AdminUsersController extends Controller
         $lastname = $request->lastname;
         $email = $request->email;
         $password = $request->password;
+        $adminUserRoleId = $request->adminUserRoleId;
+        
         $client = new Client();
         $body = [
             'all' => $all,
@@ -45,6 +51,7 @@ class AdminUsersController extends Controller
             'lastname' => $lastname,
             'email' => $email,
             'password' => $password,
+            'adminUserRoleId' => $adminUserRoleId,
             // 'nested_field' => [
             //     'nested' => 'hello'
             // ]
@@ -72,7 +79,6 @@ class AdminUsersController extends Controller
             dd($e->getCode());
         }
         $adminUser = json_decode($res->getBody(),true);
-
         return view("pages.backend.admin-users.details")
             ->with('adminUser', $adminUser)
             ;
@@ -89,8 +95,12 @@ class AdminUsersController extends Controller
         }
         $adminUser = json_decode($res->getBody(),true);
 
+        $res = $client->request('GET', env('API_BASE_URL').'admin/user-roles');
+        $roles = json_decode($res->getBody(),true);
+
         return view("pages.backend.admin-users.edit")
             ->with('adminUser', $adminUser)
+            ->with('roles', $roles)
             ;
     }
 
@@ -100,12 +110,14 @@ class AdminUsersController extends Controller
         $lastname = $request->lastname;
         $email = $request->email;
         $password = $request->password;
+        $adminUserRoleId = $request->adminUserRoleId;
         $client = new Client();
         $body = [
             'name' => $name,
             'lastname' => $lastname,
             'email' => $email,
             'password' => $password,
+            'adminUserRoleId' => $adminUserRoleId,
             // 'nested_field' => [
             //     'nested' => 'hello'
             // ]
@@ -119,7 +131,6 @@ class AdminUsersController extends Controller
                 dd($e->getCode());
             }
         $response = json_decode($res->getBody());
-            // dd($response);
         return redirect()->route('admin-users');
     }
 
