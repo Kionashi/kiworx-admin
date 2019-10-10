@@ -7,7 +7,7 @@
 		<div class="x_panel">
 			<div class="x_title">
                 <a href="{{route('admin-users')}}"><h2>
-					Admin users <small>Crear</small>
+					Admin users <small>Detalles</small>
 				</h2></a>
 				<!-- <ul class="nav navbar-right panel_toolbox">
 					<li><a href="{{route('admin-users/create')}}">nuevo registro <i class="fa fa-plus"></i></a></li>
@@ -26,42 +26,35 @@
                 </div>
             @endif
             <div class="x_content" style="display: block;">
-                <form action="{{route('admin-users/store')}}" class="form-horizontal form-label-left" method="post">
+                <form action="#" class="form-horizontal form-label-left" method="post">
                     @csrf
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">First name <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" id="name" name="name" required="required" class="form-control col-md-7 col-xs-12">
+                            <input type="text" id="name" name="name" disabled value="{{$adminUser['name']}}" class="form-control col-md-7 col-xs-12">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Last name <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" id="lastname" name="lastname" required="required" class="form-control col-md-7 col-xs-12">
+                            <input type="text" id="lastname" name="lastname" disabled value="{{$adminUser['lastname']}}" class="form-control col-md-7 col-xs-12">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Email <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="email" id="email" name="email" required="required" class="form-control col-md-7 col-xs-12">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Password <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="password" id="password" name="password" required="required" class="form-control col-md-7 col-xs-12">
+                            <input type="email" id="email" name="email" disabled value="{{$adminUser['email']}}" class="form-control col-md-7 col-xs-12">
                         </div>
                     </div>
             
                     <div class="ln_solid"></div>
-                    <div class="form-group">
-                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                            <button type="submit" class="btn btn-success">Enviar</button>
-                        </div>
+                        <div class="form-group">
+                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                    <a href="{{route('admin-users')}}" class="btn btn-primary">Volver</a>
+                    </div>
                     </div>
                 </form>
             </div> 	

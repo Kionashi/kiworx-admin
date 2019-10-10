@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use function GuzzleHttp\json_decode;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 
 class AdminUsersController extends Controller
 {
@@ -31,6 +33,69 @@ class AdminUsersController extends Controller
     }
 
     public function store(Request $request){
+        $all = $request->all();
+        $name = $request->name;
+        $lastname = $request->lastname;
+        $email = $request->email;
+        $password = $request->password;
+        $client = new Client();
+        $body = [
+            'all' => $all,
+            'name' => $name,
+            'lastname' => $lastname,
+            'email' => $email,
+            'password' => $password,
+            // 'nested_field' => [
+            //     'nested' => 'hello'
+            // ]
+            ];
+
+            try{
+                $res = $client->post(env('API_BASE_URL').'admin/users',['body'=> json_encode($body)]);
+            } catch(ClientException $e){
+                dd($e);
+            } catch(ServerException $e){
+                dd($e->getCode());
+            }
+        $response = json_decode($res->getBody());
+        // dd($response);
+        return redirect()->route('admin-users');
+    }
+
+    public function details($id){
+        $client = new Client();
+        try{
+            $res = $client->request('GET', env('API_BASE_URL').'admin/users/'.$id);
+        } catch(ClientException $e){
+            dd($e);
+        } catch(ServerException $e){
+            dd($e->getCode());
+        }
+        $adminUser = json_decode($res->getBody(),true);
+
+        return view("pages.backend.admin-users.details")
+            ->with('adminUser', $adminUser)
+            ;
+    }
+    
+    public function edit($id){
+        $client = new Client();
+        try{
+            $res = $client->request('GET', env('API_BASE_URL').'admin/users/'.$id);
+        } catch(ClientException $e){
+            dd($e);
+        } catch(ServerException $e){
+            dd($e->getCode());
+        }
+        $adminUser = json_decode($res->getBody(),true);
+
+        return view("pages.backend.admin-users.edit")
+            ->with('adminUser', $adminUser)
+            ;
+    }
+
+    public function update(Request $request){
+        $id = $request->id;
         $name = $request->name;
         $lastname = $request->lastname;
         $email = $request->email;
@@ -47,15 +112,28 @@ class AdminUsersController extends Controller
             ];
 
             try{
-                $res = $client->post(env('API_BASE_URL').'admin/users',['body'=> json_encode($body)]);
+                $res = $client->put(env('API_BASE_URL').'admin/users/'.$id, ['body'=> json_encode($body)]);
             } catch(ClientException $e){
-                dd($e->getCode());
+                dd($e);
             } catch(ServerException $e){
                 dd($e->getCode());
             }
         $response = json_decode($res->getBody());
-        dd($response);
-        
+            // dd($response);
+        return redirect()->route('admin-users');
+    }
+
+    public function destroy($id){
+       
+        $client = new Client();
+        try{
+            $res = $client->delete(env('API_BASE_URL').'admin/users/'.$id);
+        } catch(ClientException $e){
+            dd($e);
+        } catch(ServerException $e){
+            dd($e->getCode());
+        }
+
         return redirect()->route('admin-users');
     }
 }
