@@ -16,9 +16,23 @@ Route::post('/login', 'AuthController@storeSession')->name('login');
 
 //Companies
 Route::get('/companies', 'CompaniesController@index')->name('companies');
+Route::get('/companies/create', 'CompaniesController@create')->name('companies/create');
+Route::post('/companies/store', 'CompaniesController@store')->name('companies/store');
+Route::get('/companies/edit/{id}', 'CompaniesController@edit')->name('companies/edit');
+Route::post('/companies/update', 'CompaniesController@update')->name('companies/update');
+Route::get('/companies/details/{id}', 'CompaniesController@details')->name('companies/details');
+Route::get('/companies/delete/{id}', 'CompaniesController@destroy')->name('companies/delete');
+
+//Offers
+Route::get('/offers', 'OffersController@index')->name('offers');
+Route::get('/offers/create', 'OffersController@create')->name('offers/create');
+Route::post('/offers/store', 'OffersController@store')->name('offers/store');
+Route::get('/offers/edit/{id}', 'OffersController@edit')->name('offers/edit');
+Route::post('/offers/update', 'OffersController@update')->name('offers/update');
+Route::get('/offers/details/{id}', 'OffersController@details')->name('offers/details');
+Route::get('/offers/delete/{id}', 'OffersController@destroy')->name('offers/delete');
 
 //Admin Users
-
 Route::group(['middleware' => ['admin.auth']], function () {
     Route::get('/', 'HomeController@index')->name('home');
     Route::get('/logout', 'AuthController@logout')->name('logout');
