@@ -2,149 +2,158 @@
 
 namespace App\Http\Controllers;
 
-use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use function GuzzleHttp\json_decode;
+use function GuzzleHttp\json_encode;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use Illuminate\Http\Request;
 
 class AdminUsersController extends Controller
 {
     public function index(){
-        if (!session()->exists('admin.id')) {
-            session([
-                'admin.id' => 1,
-                'admin.name' => 'Víctor',
-                'admin.lastname' => 'Cardozo'
-            ]);
-        }
-        $client = new Client();
-        $res = $client->request('GET', env('API_BASE_URL').'admin/users');
-        $adminUsers = json_decode($res->getBody(),true);
-
-        return view("pages.backend.admin-users.index")
-            ->with('adminUsers', $adminUsers)
+        try{
+            // Get admin user list
+            $res = $this->client->get(env('API_BASE_URL').'admin/admin-users');
+            
+            // Parse response
+            $adminUsers = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.admin-users.index")
+                ->with('adminUsers', $adminUsers)
             ;
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
+        
     }
 
     public function create(){
-        $client = new Client();
-        $res = $client->request('GET', env('API_BASE_URL').'admin/user-roles');
-        $roles = json_decode($res->getBody(),true);
-        return view("pages.backend.admin-users.create")
-            ->with('roles',$roles)
-        ;
+        try {
+            // Get admin user roles
+            $res = $this->client->get(env('API_BASE_URL').'admin/user-roles');
+            
+            // Parse response
+            $roles = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.admin-users.create")
+                ->with('roles',$roles)
+            ;
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
     }
 
     public function store(Request $request){
-        $all = $request->all();
-        $name = $request->name;
-        $lastname = $request->lastname;
-        $email = $request->email;
-        $password = $request->password;
-        $adminUserRoleId = $request->adminUserRoleId;
         
-        $client = new Client();
-        $body = [
-            'all' => $all,
-            'name' => $name,
-            'lastname' => $lastname,
-            'email' => $email,
-            'password' => $password,
-            'adminUserRoleId' => $adminUserRoleId,
-            // 'nested_field' => [
-            //     'nested' => 'hello'
-            // ]
+        try{
+            // Build request body
+            $body = [
+                'all' => $request->all(),
+                'name' => $request->name,
+                'lastname' => $request->lastname,
+                'email' => $request->email,
+                'password' => $request->password,
+                'adminUserRoleId' => $request->adminUserRoleId,
             ];
-
-            try{
-                $res = $client->post(env('API_BASE_URL').'admin/users',['body'=> json_encode($body)]);
-            } catch(ClientException $e){
-                dd($e);
-            } catch(ServerException $e){
-                dd($e->getCode());
-            }
-        $response = json_decode($res->getBody());
-        // dd($response);
-        return redirect()->route('admin-users');
+            
+            // Store admin user
+            $this->client->post(env('API_BASE_URL').'admin/admin-users',['body'=> json_encode($body)]);
+            
+            // Redirect to list
+            return redirect()->route('admin-users');
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
     }
 
     public function details($id){
-        $client = new Client();
         try{
-            $res = $client->request('GET', env('API_BASE_URL').'admin/users/'.$id);
-        } catch(ClientException $e){
-            dd($e);
-        } catch(ServerException $e){
-            dd($e->getCode());
-        }
-        $adminUser = json_decode($res->getBody(),true);
-        return view("pages.backend.admin-users.details")
-            ->with('adminUser', $adminUser)
+            // Get admin user details
+            $res = $this->client->get(env('API_BASE_URL').'admin/admin-users/'.$id);
+            
+            // Parse respoonse
+            $adminUser = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.admin-users.details")
+                ->with('adminUser', $adminUser)
             ;
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
     }
     
     public function edit($id){
-        $client = new Client();
         try{
-            $res = $client->request('GET', env('API_BASE_URL').'admin/users/'.$id);
-        } catch(ClientException $e){
-            dd($e);
-        } catch(ServerException $e){
-            dd($e->getCode());
-        }
-        $adminUser = json_decode($res->getBody(),true);
-
-        $res = $client->request('GET', env('API_BASE_URL').'admin/user-roles');
-        $roles = json_decode($res->getBody(),true);
-
-        return view("pages.backend.admin-users.edit")
-            ->with('adminUser', $adminUser)
-            ->with('roles', $roles)
+            // Get admin user details
+            $res = $this->client->get(env('API_BASE_URL').'admin/admin-users/'.$id);
+            
+            // Parse response
+            $adminUser = json_decode($res->getBody(),true);
+            
+            // Get admin roles
+            $res = $this->client->get(env('API_BASE_URL').'admin/user-roles');
+            
+            // Parse response
+            $roles = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.admin-users.edit")
+                ->with('adminUser', $adminUser)
+                ->with('roles', $roles)
             ;
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
     }
 
     public function update(Request $request){
-        $id = $request->id;
-        $name = $request->name;
-        $lastname = $request->lastname;
-        $email = $request->email;
-        $password = $request->password;
-        $adminUserRoleId = $request->adminUserRoleId;
-        $client = new Client();
-        $body = [
-            'name' => $name,
-            'lastname' => $lastname,
-            'email' => $email,
-            'password' => $password,
-            'adminUserRoleId' => $adminUserRoleId,
-            // 'nested_field' => [
-            //     'nested' => 'hello'
-            // ]
+        
+        try{
+            // Build request body
+            $body = [
+                'name' => $request->name,
+                'lastname' => $request->lastname,
+                'email' => $request->email,
+                'password' => $request->password,
+                'adminUserRoleId' => $request->adminUserRoleId,
             ];
-
-            try{
-                $res = $client->put(env('API_BASE_URL').'admin/users/'.$id, ['body'=> json_encode($body)]);
-            } catch(ClientException $e){
-                dd($e);
-            } catch(ServerException $e){
-                dd($e->getCode());
-            }
-        $response = json_decode($res->getBody());
-        return redirect()->route('admin-users');
+            // Update admin user
+            $this->client->put(env('API_BASE_URL').'admin/admin-users/'.$request->id, ['body'=> json_encode($body)]);
+            
+            // Redirect to list
+            return redirect()->route('admin-users');
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
     }
 
     public function destroy($id){
-       
-        $client = new Client();
         try{
-            $res = $client->delete(env('API_BASE_URL').'admin/users/'.$id);
+            // Delete record
+            $this->client->delete(env('API_BASE_URL').'admin/admin-users/'.$id);
+            
+            // Redirect to list
+            return redirect()->route('admin-users');
         } catch(ClientException $e){
-            dd($e);
+            return $this->handleError($e->getCode());
         } catch(ServerException $e){
-            dd($e->getCode());
+            return $this->handleError($e->getCode());
         }
 
-        return redirect()->route('admin-users');
     }
 }
