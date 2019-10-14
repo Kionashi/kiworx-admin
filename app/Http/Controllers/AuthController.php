@@ -33,6 +33,9 @@ class AuthController extends Controller
     
     public function login()
     {
+        // Delete session if exist
+        if (session()->exists('admin.id')) session()->flush();
+        
         return view('auth.login');
     }
     public function storeSession(Request $request)
@@ -50,6 +53,7 @@ class AuthController extends Controller
             // Send http request
             $req = $client->post($url,  ['body' => json_encode($body)]);
             $response = json_decode($req->getBody());
+            
             $isAdmin = false;
             foreach ($response->adminUser->role->permissions as $permission ) {
                 if ($permission->code == 'super-admin') {
@@ -62,20 +66,19 @@ class AuthController extends Controller
                 'admin.name' => $response->adminUser->name,
                 'admin.lastname' => $response->adminUser->lastname,
                 'admin.permissions' => $response->adminUser->role->permissions,
-                'admin.isSuperAdmin' => $isAdmin
+                'admin.isSuperAdmin' => $isAdmin,
+                'api-token' => $response->token
             ]);
-            
-//             dd(session()->all());
             
             // Redirect to home
             return redirect()->route('home');
             
         } catch(ClientException $e) {
             // Error 4XX
-            dd($e, $e->getCode());
+            return $this->handleError($e->code);
         } catch(ServerException $e) {
             // Error 5XX
-            dd($e, $e->getCode());
+            return $this->handleError($e->code);
         }
         
     }
