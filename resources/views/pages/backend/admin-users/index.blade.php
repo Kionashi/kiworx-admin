@@ -21,6 +21,7 @@
 						<tr>
 							<th>Nombre</th>
 							<th>Correo</th>
+							<th>Rol</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -29,6 +30,7 @@
 						<tr style="height: 40px;">
 							<td>{{ $adminUser['name'] }}</td>
 							<td>{{ $adminUser['email'] }}</td>
+							<td>{{ $adminUser['role']['name'] }}</td>
 							<td><a href="{{route('admin-users/details', $adminUser['id'])}}"
 								title="Detalles" class="icon-table"><i class="fa fa-search"></i></a>
 								<a href="{{route('admin-users/edit', $adminUser['id'])}}"
