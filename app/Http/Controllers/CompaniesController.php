@@ -88,6 +88,39 @@ class CompaniesController extends Controller
         $keyPersonImage = $request->file('keyPersonImage');
         $keyPersonTitle = $request->keyPersonTitle;
         $adminUserId = $request->adminUserId;
+
+        $logoPath = $logo->getPathname();
+        $logoMime = $logo->getmimeType();
+        $logoName  = $logo->getClientOriginalName();
+
+        $backgroundImagePath = $backgroundImage->getPathname();
+        $backgroundImageMime = $backgroundImage->getmimeType();
+        $backgroundImageName  = $backgroundImage->getClientOriginalName();
+
+        $keyPersonImagePath = $keyPersonImage->getPathname();
+        $keyPersonImageMime = $keyPersonImage->getmimeType();
+        $keyPersonImageName  = $keyPersonImage->getClientOriginalName();
+
+        // dd($request->hasFile('logo'));
+        $client = new Client();
+        // try{
+        //     $response = $client->post(env('API_BASE_URL').'admin/companies/upload-file', [
+        //                 'multipart' => [
+        //                     [
+        //                         'name'     => 'logo',
+        //                         'filename' => $logoName,
+        //                         'Mime-Type'=> $logoMime,
+        //                         'contents' => fopen( $logoPath, 'r' ),
+        //                     ],
+        //                     ]
+        //             ]);
+
+        // } catch(ClientException $e){
+        //     dd($e);
+        // } catch(ServerException $e){
+        //     dd($e->getCode());
+        // }
+        // dd($response->getCode());
         $body = [
             'all' => $all,
             'name' => $name,
@@ -106,48 +139,29 @@ class CompaniesController extends Controller
             'adminUserId' => $adminUserId,
             
             ];
-            $client = new Client();
-        Try {
-//             $res = $client->post(
-//                 env('API_BASE_URL').'admin/companies', [
-//                     'body' => json_encode($body),
-//                     'headers' => [
-//                         'Accept'                => 'application/json',
-// //                        'Content-Type'          => 'multipart/form-data',  // <-- commented out this line
-//                         // 'Authorization'         => 'Bearer '. $userToken,
-//                     ],
-//                     'multipart' => [
-//                         [
-//                             'name'     => 'logo',
-//                             'contents' => 'file_get_contents($logo->getPath())',
-//                         ],
-//                         [
-//                             'name'     => 'keyPersonImage',
-//                             'contents' => 'file_get_contents($keyPersonImage->getPath())',
-//                         ],
-//                         [
-//                             'name'     => 'backgroundImage',
-//                             'contents' => 'file_get_contents($backgroundImage->getPath())',
-//                         ],
-//                     ],
-//                 ]
-//             );
+        try {
             $res = $client->post(env('API_BASE_URL').'admin/companies',[
-                'body'=> json_encode($body)
-                // , 'multipart' => [
-                //         [
-                //             'name'     => 'logo',
-                //             'contents' => 'file_get_contents($logo->getPath())',
-                //         ],
-                //         [
-                //             'name'     => 'keyPersonImage',
-                //             'contents' => 'file_get_contents($keyPersonImage->getPath())',
-                //         ],
-                //         [
-                //             'name'     => 'backgroundImage',
-                //             'contents' => 'file_get_contents($backgroundImage->getPath())',
-                //         ]
-                // ]
+                'body'=> json_encode($body),
+                'multipart' => [
+                    [
+                        'name'     => 'logo',
+                        'filename' => $logoName,
+                        'Mime-Type'=> $logoMime,
+                        'contents' => fopen( $logoPath, 'r' ),
+                    ],
+                    [
+                        'name'     => 'backgroundImage',
+                        'filename' => $backgroundImageName,
+                        'Mime-Type'=> $backgroundImageMime,
+                        'contents' => fopen( $backgroundImagePath, 'r' ),
+                    ],
+                    [
+                        'name'     => 'keyPersonImage',
+                        'filename' => $keyPersonImageName,
+                        'Mime-Type'=> $keyPersonImageMime,
+                        'contents' => fopen( $keyPersonImagePath, 'r' ),
+                    ],
+                    ]
             ]);
         } catch(ClientException $e){
             dd($e);
