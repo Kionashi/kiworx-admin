@@ -2,173 +2,135 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use GuzzleHttp\Client;
 use function GuzzleHttp\json_decode;
+use function GuzzleHttp\json_encode;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use Illuminate\Http\Request;
 
 class OffersController extends Controller
 {
-    public function __construct()
-    {
-    
-    }
 
     public function index(){
-        $client = new Client();
         try{
-            $res = $client->request('GET', env('API_BASE_URL').'admin/offers', []);
+            $res = $this->client->get(env('API_BASE_URL').'admin/offers', []);
+            $offers = json_decode($res->getBody(),true);
+            
+            return view("pages.backend.offers.index")
+                ->with('offers', $offers)
+            ;
         } catch(ClientException $e){
             dd($e);
         } catch(ServerException $e){
             dd($e->getCode());
         }
-        // dump($res->getStatusCode());
-        // // "200"
-        // dump($res->getHeader('content-type')[0]);
-        // // 'application/json; charset=utf8'
-        $offers = json_decode($res->getBody(),true);
-        // dd($offers);
-        return view("pages.backend.offers.index")
-            ->with('offers', $offers)
-            ;
-
+        
     }
 
     public function create(){
-        $client = new Client();
         try{
-            $res = $client->request('GET', env('API_BASE_URL').'admin/companies');
+            $res = $this->client->get(env('API_BASE_URL').'admin/companies');
+            $companies = json_decode($res->getBody(),true);
+            
+            return view("pages.backend.offers.create")
+                ->with('companies',$companies)
+            ;
         } catch(ClientException $e){
             dd($e);
         } catch(ServerException $e){
             dd($e->getCode());
         }
-        $companies = json_decode($res->getBody(),true);
-
-        return view("pages.backend.offers.create")
-            ->with('companies',$companies)
-        ;
     }
 
     public function store(Request $request){
-        $all = $request->all();
-        $position = $request->position;
-        $description = $request->description;
-        $experience = $request->experience;
-        $start_date = $request->start_date;
-        $contract_type = $request->contract_type;
-        $category = $request->category;
-        $companyId = $request->companyId;
-
-        $body = [
-            'all' => $all,
-            'position' => $position,
-            'description' => $description,
-            'experience' => $experience,
-            'start_date' => $start_date,
-            'contract_type' => $contract_type,
-            'category' => $category,
-            'companyId' => $companyId,
+        try {
+            
+            $body = [
+                'all' => $request->all(),
+                'position' => $request->position,
+                'description' => $request->description,
+                'experience' => $request->experience,
+                'start_date' => $request->start_date,
+                'contract_type' => $request->contract_type,
+                'category' => $request->category,
+                'companyId' => $request->companyId,
             ];
-        $client = new Client();
-        Try {
-            $res = $client->post(env('API_BASE_URL').'admin/offers',[
+            $this->client->post(env('API_BASE_URL').'admin/offers',[
                 'body'=> json_encode($body)
             ]);
+            return redirect()->route('offers');
         } catch(ClientException $e){
             dd($e);
         } catch(ServerException $e){
             dd($e->getCode());
         }
-        $response = json_decode($res->getBody()->getContents());
-        // dd($response);
-        return redirect()->route('offers');
+        
     }
 
     public function details($id){
-        $client = new Client();
         try{
-            $res = $client->request('GET', env('API_BASE_URL').'admin/offers/'.$id);
+            $res = $this->client->get(env('API_BASE_URL').'admin/offers/'.$id);
+            $offer = json_decode($res->getBody(),true);
+            // dd($offer);
+            return view("pages.backend.offers.details")
+                ->with('offer', $offer)
+            ;
         } catch(ClientException $e){
             dd($e);
         } catch(ServerException $e){
             dd($e->getCode());
         }
-        $offer = json_decode($res->getBody(),true);
-        // dd($offer);
-        return view("pages.backend.offers.details")
-            ->with('offer', $offer)
-            ;
     }
     
     public function edit($id){
-        $client = new Client();
         try{
-            $res = $client->request('GET', env('API_BASE_URL').'admin/offers/'.$id);
+            $res = $this->client->request('GET', env('API_BASE_URL').'admin/offers/'.$id);
+            $offer = json_decode($res->getBody(),true);
+            
+            $res = $this->client->request('GET', env('API_BASE_URL').'admin/companies');
+            $companies = json_decode($res->getBody(),true);
+            // dd($offer);
+            return view("pages.backend.offers.edit")
+                ->with('companies', $companies)
+                ->with('offer', $offer)
+            ;
         } catch(ClientException $e){
             dd($e);
         } catch(ServerException $e){
             dd($e->getCode());
         }
-        $offer = json_decode($res->getBody(),true);
-        
-        $res = $client->request('GET', env('API_BASE_URL').'admin/companies');
-        $companies = json_decode($res->getBody(),true);
-        // dd($offer);
-        return view("pages.backend.offers.edit")
-            ->with('companies', $companies)
-            ->with('offer', $offer)
-            ;
     }
 
-    public function update(Request $request){
-        $id = $request->id;
-        $all = $request->all();
-        $position = $request->position;
-        $description = $request->description;
-        $experience = $request->experience;
-        $start_date = $request->start_date;
-        $contract_type = $request->contract_type;
-        $category = $request->category;
-        $finished = $request->finished;
-        $companyId = $request->companyId;
-        // dd($finished);
-        if($finished == 'true'){
+    public function update(Request $request) {
+        
+        try{
+            $finished = $request->finished == 'true'?true:false;
             
-            $finished = true;
-        }else{
-            $finished = false;
-        }
-        $body = [
-            'all' => $all,
-            'position' => $position,
-            'description' => $description,
-            'experience' => $experience,
-            'start_date' => $start_date,
-            'contract_type' => $contract_type,
-            'category' => $category,
-            'finished' => $finished,
-            'companyId' => $companyId,
+            $body = [
+                'all' => $request->all(),
+                'position' => $request->position,
+                'description' => $request->description,
+                'experience' => $request->experience,
+                'start_date' => $request->start_date,
+                'contract_type' => $request->contract_type,
+                'category' => $request->category,
+                'finished' => $finished,
+                'companyId' => $request->companyId,
             ];
-        $client = new Client();
-            try{
-                $res = $client->put(env('API_BASE_URL').'admin/offers/'.$id, ['body'=> json_encode($body)]);
-            } catch(ClientException $e){
-                dd($e);
-            } catch(ServerException $e){
-                dd($e->getCode());
-            }
+            $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$request->id, ['body'=> json_encode($body)]);
+        } catch(ClientException $e){
+            dd($e);
+        } catch(ServerException $e){
+            dd($e->getCode());
+        }
         $response = json_decode($res->getBody());
         return redirect()->route('offers');
     }
 
     public function destroy($id){
        
-        $client = new Client();
         try{
-            $res = $client->delete(env('API_BASE_URL').'admin/offers/'.$id);
+            $res = $this->client->delete(env('API_BASE_URL').'admin/offers/'.$id);
         } catch(ClientException $e){
             dd($e);
         } catch(ServerException $e){
