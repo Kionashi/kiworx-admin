@@ -38,27 +38,27 @@ class CompaniesController extends Controller
         } catch(ClientException $e){
             dd($e);
         } catch(ServerException $e){
-            dd($e->getCode());
+            dd($e);
         }
     }
     
     public function store(Request $request) {
         try {
-            $logo = $request->file('logo');
-            $backgroundImage = $request->file('backgroundImage');
-            $keyPersonImage = $request->file('keyPersonImage');
+//             $logo = $request->file('logo');
+//             $backgroundImage = $request->file('backgroundImage');
+//             $keyPersonImage = $request->file('keyPersonImage');
             
-            $logoPath = $logo->getPathname();
-            $logoMime = $logo->getmimeType();
-            $logoName  = $logo->getClientOriginalName();
+//             $logoPath = $logo->getPathname();
+//             $logoMime = $logo->getmimeType();
+//             $logoName  = $logo->getClientOriginalName();
             
-            $backgroundImagePath = $backgroundImage->getPathname();
-            $backgroundImageMime = $backgroundImage->getmimeType();
-            $backgroundImageName  = $backgroundImage->getClientOriginalName();
+//             $backgroundImagePath = $backgroundImage->getPathname();
+//             $backgroundImageMime = $backgroundImage->getmimeType();
+//             $backgroundImageName  = $backgroundImage->getClientOriginalName();
             
-            $keyPersonImagePath = $keyPersonImage->getPathname();
-            $keyPersonImageMime = $keyPersonImage->getmimeType();
-            $keyPersonImageName  = $keyPersonImage->getClientOriginalName();
+//             $keyPersonImagePath = $keyPersonImage->getPathname();
+//             $keyPersonImageMime = $keyPersonImage->getmimeType();
+//             $keyPersonImageName  = $keyPersonImage->getClientOriginalName();
             
             $body = [
                 'all' => $request->all(),
@@ -81,22 +81,22 @@ class CompaniesController extends Controller
                 'body'=> json_encode($body),
                 'multipart' => [
                     [
-                        'name'     => 'logo',
-                        'filename' => $logoName,
-                        'Mime-Type'=> $logoMime,
-                        'contents' => fopen( $logoPath, 'r' ),
+//                         'name'     => 'logo',
+//                         'filename' => $logoName,
+//                         'Mime-Type'=> $logoMime,
+//                         'contents' => fopen( $logoPath, 'r' ),
                     ],
                     [
-                        'name'     => 'backgroundImage',
-                        'filename' => $backgroundImageName,
-                        'Mime-Type'=> $backgroundImageMime,
-                        'contents' => fopen( $backgroundImagePath, 'r' ),
+//                         'name'     => 'backgroundImage',
+//                         'filename' => $backgroundImageName,
+//                         'Mime-Type'=> $backgroundImageMime,
+//                         'contents' => fopen( $backgroundImagePath, 'r' ),
                     ],
                     [
-                        'name'     => 'keyPersonImage',
-                        'filename' => $keyPersonImageName,
-                        'Mime-Type'=> $keyPersonImageMime,
-                        'contents' => fopen( $keyPersonImagePath, 'r' ),
+//                         'name'     => 'keyPersonImage',
+//                         'filename' => $keyPersonImageName,
+//                         'Mime-Type'=> $keyPersonImageMime,
+//                         'contents' => fopen( $keyPersonImagePath, 'r' ),
                     ],
                 ]
             ]);

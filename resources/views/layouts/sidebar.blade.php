@@ -36,21 +36,11 @@
 			@endif
 			
 			<li>
-				<a href="{{route('companies')}}"><i class="fa fa-desktop"></i> Compañía</a>
+				<a href="{{route('companies')}}"><i class="fa fa-desktop"></i> Startup</a>
 			</li>
 			
 			<li>
 				<a href="{{route('offers')}}"><i class="fa fa-table"></i> Ofertas</a>
-			</li>
-			<li><a><i class="fa fa-bar-chart-o"></i> ATS <span
-					class="fa fa-chevron-down"></span></a>
-				<ul class="nav child_menu">
-					<li><a href="chartjs.html">Chart JS</a></li>
-					<li><a href="chartjs2.html">Chart JS2</a></li>
-					<li><a href="morisjs.html">Moris JS</a></li>
-					<li><a href="echarts.html">ECharts</a></li>
-					<li><a href="other_charts.html">Other Charts</a></li>
-				</ul>
 			</li>
 		</ul>
 	</div>

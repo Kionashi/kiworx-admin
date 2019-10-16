@@ -15,7 +15,44 @@ class OffersController extends Controller
         try{
             $res = $this->client->get(env('API_BASE_URL').'admin/offers', []);
             $offers = json_decode($res->getBody(),true);
-            
+            $offers = array(
+                [
+                    'id'        => 1,
+                    'position'  => 'Programador Senior Android/Java',
+                    'category'  => 'IT',
+                    'company'   => array(
+                        'name'  => 'Cabify España'
+                    ),
+                    'active'    => false
+                ],
+                [
+                    'id'        => 2,
+                    'position'  => 'Programador junio PHP',
+                    'category'  => 'IT',
+                    'company'   => array(
+                        'name'  => 'Cabify España'
+                    ),
+                    'active'    => true
+                ],
+                [
+                    'id'        => 1,
+                    'position'  => 'Programador Senior Android/Java',
+                    'category'  => 'IT',
+                    'company'   => array(
+                        'name'  => 'Cabify España'
+                    ),
+                    'active'    => false
+                ],
+                [
+                    'id'        => 2,
+                    'position'  => 'Programador junio PHP',
+                    'category'  => 'IT',
+                    'company'   => array(
+                        'name'  => 'Cabify España'
+                    ),
+                    'active'    => true
+                ]
+            );
             return view("pages.backend.offers.index")
                 ->with('offers', $offers)
             ;
@@ -69,11 +106,88 @@ class OffersController extends Controller
 
     public function details($id){
         try{
-            $res = $this->client->get(env('API_BASE_URL').'admin/offers/'.$id);
-            $offer = json_decode($res->getBody(),true);
+//             $res = $this->client->get(env('API_BASE_URL').'admin/offers/'.$id);
+//             $offer = json_decode($res->getBody(),true);
+            $offer = array(
+                'id'                => 1,
+                'position'          => 'Programador Senior Android/Java',
+                'category'          => 'IT',
+                'phases'        => array(
+                    [
+                        'name'      => 'Aplicantes',
+                        'applicant'  => '200',
+                        'rejected'  => '0',
+                        'isFinal'   => false
+                    ],
+                    [
+                        'name'      => 'Elenius',
+                        'applicant'  => '200',
+                        'rejected'  => '190',
+                        'isFinal'   => false
+                    ],
+                    [
+                        'name'      => 'Entrevista #1',
+                        'applicant'  => '10',
+                        'rejected'  => '5',
+                        'isFinal'   => false
+                    ],
+                    [
+                        'name'      => 'Entrevista #2',
+                        'applicant'  => '5',
+                        'rejected'  => '1',
+                        'isFinal'   => false
+                    ],
+                    [
+                        'name'      => 'Propuesta',
+                        'applicant'  => '4',
+                        'rejected'  => '3',
+                        'isFinal'   => false
+                    ],
+                    [
+                        'name'      => 'Contratado',
+                        'applicant'  => '1',
+                        'rejected'  => '1',
+                        'isFinal'   => true
+                    ]
+                    
+                ),
+                'active'            => false,
+                'company'           => array(
+'                   name'  => 'Cabify España'
+                )
+            );
+            
+            $applicants = array(
+                [
+                    'name'          => 'Víctor',
+                    'lastname'      => 'Cardozo',
+                    'email'         => 'vcardozo@kiworx.net',
+                    'status'        => 'PENDING'
+                ],
+                [
+                    'name'          => 'Santiago',
+                    'lastname'      => 'Romero',
+                    'email'         => 'romero@kiworx.net',
+                    'status'        => 'ACCEPTED'
+                ],
+                [
+                    'name'          => 'Javier',
+                    'lastname'      => 'Cañizares',
+                    'email'         => 'jcanizares@kiworx.net',
+                    'status'        => 'REJECTED'
+                ],
+                [
+                    'name'          => 'Víctor',
+                    'lastname'      => 'Cardozo',
+                    'email'         => 'vcardozo@kiworx.net',
+                    'status'        => 'PENDING'
+                ],
+            );
+            
             // dd($offer);
             return view("pages.backend.offers.details")
                 ->with('offer', $offer)
+                ->with('applicants', $applicants)
             ;
         } catch(ClientException $e){
             dd($e);
