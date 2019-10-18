@@ -387,6 +387,7 @@ if (typeof NProgress != 'undefined') {
 		];
 		
 		var chart_plot_02_data = [];
+		var chart_plot_02_datax = [];
 		
 		var chart_plot_03_data = [
 			[0, 1],
@@ -411,6 +412,7 @@ if (typeof NProgress != 'undefined') {
 		
 		for (var i = 0; i < 30; i++) {
 		  chart_plot_02_data.push([new Date(Date.today().add(i).days()).getTime(), randNum() + i + i + 10]);
+		  chart_plot_02_datax.push([new Date(Date.today().add(i).days()).getTime(), randNum()]);
 		}
 		
 		
@@ -559,14 +561,24 @@ if (typeof NProgress != 'undefined') {
 			
 			$.plot( $("#chart_plot_02"), 
 			[{ 
-				label: "Email Sent", 
+				label: "Visualizaciones", 
 				data: chart_plot_02_data, 
 				lines: { 
 					fillColor: "rgba(150, 202, 89, 0.12)" 
 				}, 
 				points: { 
 					fillColor: "#fff" } 
-			}], chart_plot_02_settings);
+			},
+			{ 
+				label: "Aplicaciones", 
+				data: chart_plot_02_datax, 
+				lines: { 
+					fillColor: "rgba(0, 0, 89, 0.12)" 
+				}, 
+				points: { 
+					fillColor: "#fff" } 
+			}
+			], chart_plot_02_settings);
 			
 		}
 		

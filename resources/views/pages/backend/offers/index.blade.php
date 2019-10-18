@@ -1,6 +1,4 @@
-@extends('layouts.app')
-@section('section', 'Administradores')
-@section('content')
+@extends('layouts.app') @section('content')
 <div class="">
 	<div class="clearfix"></div>
 
@@ -8,36 +6,44 @@
 		<div class="x_panel">
 			<div class="x_title">
 				<h2>
-					Admin users <small>List</small>
+					Ofertas <small>Listar</small>
 				</h2>
 				<ul class="nav navbar-right panel_toolbox">
-					<li><a href="{{route('admin-users/create')}}">Nuevo registro <i class="fa fa-plus"></i></a></li>
+					<li><a style="color: #cc3ba0;" href="{{route('offers/create')}}">Nueva oferta <i class="fa fa-plus"></i></a></li>
 				</ul>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
-				@if (isset($adminUsers))
+				@if (isset($offers))
 				<table id="datatable-buttons"
 					class="table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>Nombre</th>
-							<th>Correo</th>
-							<th>Rol</th>
+							<th>Posición</th>
+							<th>Categoria</th>
+							<th>Compañia</th>
+							<th>Estado</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($adminUsers as $adminUser)
+						@foreach($offers as $offer)
 						<tr style="height: 40px;">
-							<td>{{ $adminUser['name'] }}</td>
-							<td>{{ $adminUser['email'] }}</td>
-							<td>{{ $adminUser['role']['name'] }}</td>
-							<td><a href="{{route('admin-users/details', $adminUser['id'])}}"
+							<td><a href="{{route('offers/details', $offer['id'])}}">{{ $offer['position'] }}</a></td>
+							<td>{{ $offer['category'] }}</td>
+							<td>{{ $offer['company']['name'] }}</td>
+							<td>
+								@if($offer['active'])
+									<button class="btn btn-success btn-xs">Activo</button>
+								@else
+									<button class="btn btn-danger btn-xs">Inactivo</button>
+								@endif
+							</td>
+							<td><a href="{{route('offers/details', $offer['id'])}}"
 								title="Detalles" class="icon-table"><i class="fa fa-search"></i></a>
-								<a href="{{route('admin-users/edit', $adminUser['id'])}}"
+								<a href="{{route('offers/edit', $offer['id'])}}"
 								title="Editar" class="icon-table"><i class="fa fa-edit"></i></a>
-								<a href="{{route('admin-users/delete', $adminUser['id'])}}"
+								<a href="{{route('offers/delete', $offer['id'])}}"
 								title="Eliminar" class="icon-table"><i class="fa fa-trash"></i></a>
 							</td>
 						</tr>
@@ -45,7 +51,7 @@
 					</tbody>
 				</table>
 				@else
-				<p>There are no admin users available.</p>
+				<p>No hay compañias disponibles.</p>
 				@endif
 			</div>
 		</div>

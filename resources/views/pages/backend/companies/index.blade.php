@@ -1,6 +1,4 @@
-@extends('layouts.app')
-@section('section', 'Administradores')
-@section('content')
+@extends('layouts.app') @section('content')
 <div class="">
 	<div class="clearfix"></div>
 
@@ -8,36 +6,34 @@
 		<div class="x_panel">
 			<div class="x_title">
 				<h2>
-					Admin users <small>List</small>
+					Compañias <small>Listar</small>
 				</h2>
 				<ul class="nav navbar-right panel_toolbox">
-					<li><a href="{{route('admin-users/create')}}">Nuevo registro <i class="fa fa-plus"></i></a></li>
+					<li><a href="{{route('companies/create')}}">Nuevo registro <i class="fa fa-plus"></i></a></li>
 				</ul>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
-				@if (isset($adminUsers))
+				@if (isset($companies))
 				<table id="datatable-buttons"
 					class="table table-striped table-bordered">
 					<thead>
 						<tr>
 							<th>Nombre</th>
-							<th>Correo</th>
-							<th>Rol</th>
+							<th>Categoria</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($adminUsers as $adminUser)
+						@foreach($companies as $company)
 						<tr style="height: 40px;">
-							<td>{{ $adminUser['name'] }}</td>
-							<td>{{ $adminUser['email'] }}</td>
-							<td>{{ $adminUser['role']['name'] }}</td>
-							<td><a href="{{route('admin-users/details', $adminUser['id'])}}"
+							<td>{{ $company['name'] }}</td>
+							<td>{{ $company['category'] }}</td>
+							<td><a href="{{route('companies/details', $company['id'])}}"
 								title="Detalles" class="icon-table"><i class="fa fa-search"></i></a>
-								<a href="{{route('admin-users/edit', $adminUser['id'])}}"
+								<a href="{{route('companies/edit', $company['id'])}}"
 								title="Editar" class="icon-table"><i class="fa fa-edit"></i></a>
-								<a href="{{route('admin-users/delete', $adminUser['id'])}}"
+								<a href="{{route('companies/delete', $company['id'])}}"
 								title="Eliminar" class="icon-table"><i class="fa fa-trash"></i></a>
 							</td>
 						</tr>
@@ -45,7 +41,7 @@
 					</tbody>
 				</table>
 				@else
-				<p>There are no admin users available.</p>
+				<p>No hay compañias disponibles.</p>
 				@endif
 			</div>
 		</div>
