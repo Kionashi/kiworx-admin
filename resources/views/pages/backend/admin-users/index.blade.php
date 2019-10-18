@@ -1,4 +1,6 @@
-@extends('layouts.app') @section('content')
+@extends('layouts.app')
+@section('section', 'Administradores')
+@section('content')
 <div class="">
 	<div class="clearfix"></div>
 

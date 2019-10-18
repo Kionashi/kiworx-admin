@@ -1,4 +1,6 @@
-@extends('layouts.app') @section('content')
+@extends('layouts.app')
+@section('section', 'Dashboard')
+@section('content')
 <div class="row tile_count">
 	<div class="col-md-4 col-sm-4 col-xs-12">
 		<select id="experience" name="experience" required="required"
@@ -28,7 +30,7 @@
 <!-- top tiles -->
 <div class="row tile_count">
 	<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-		<span class="count_top"><i class="fa fa-user"></i> Visualizaciones</span>
+		<span class="counTitlet_top"><i class="fa fa-user"></i> Visualizaciones</span>
 		<div class="count">2500</div>
 		<span class="count_bottom"><i class="green">4% </i> From last Week</span>
 	</div>
