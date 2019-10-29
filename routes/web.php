@@ -57,6 +57,10 @@ Route::group(['middleware' => ['admin.auth']], function () {
     
 });
 
+// Job board
+Route::get('/{company}/jobs/{code}', 'OffersController@publicDetail')->name('offer/public');
+Route::post('/{company}/jobs/{code}', 'OffersController@storeApplyment')->name('offer/apply');
+
 //Test
 Route::get('/test', 'TestsController@test')->name('test');
 Route::post('/test-post', 'TestsController@testPost')->name('test-post');
