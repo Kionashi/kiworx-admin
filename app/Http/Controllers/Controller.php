@@ -16,7 +16,10 @@ class Controller extends BaseController
     protected $client;
     
     function __construct(){
-        $this->client = new Client(['headers' => ['Api-Token' => session('api-token')]]);
+        $this->client = new Client(['headers' => [
+            'Content-Type'  => 'application/json',
+            'Api-Token'     => session('api-token')
+        ]]);
     }
     
     function handleError($code) {
