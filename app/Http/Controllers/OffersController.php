@@ -253,4 +253,51 @@ class OffersController extends Controller
 
         return redirect()->route('offers');
     }
+    
+    public function publicDetail($company, $code)
+    {
+        try {
+            // Get admin user roles
+            $res = $this->client->get(env('API_BASE_URL').'offers/'.$code);
+            
+            // Parse response
+            $offer = json_decode($res->getBody(),true);
+//             dd($offer);
+            // Return view
+            return view("pages.public.offer")
+                ->with('offer',$offer)
+            ;
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
+    }
+    
+    public function storeApplyment(Request $request)
+    {
+        
+        try{
+            // Build request body
+            $body = [
+                'all' => $request->all(),
+                'name' => $request->name,
+                'lastname' => $request->lastname,
+                'email' => $request->email,
+                'password' => $request->password,
+                'adminUserRoleId' => $request->adminUserRoleId,
+            ];
+            
+            // Store admin user
+            $this->client->post(env('API_BASE_URL').'admin/admin-users',['body'=> json_encode($body)]);
+            
+            // Redirect to list
+            return redirect()->route('admin-users');
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
+    }
+    
 }
