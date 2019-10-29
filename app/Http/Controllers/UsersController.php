@@ -2,37 +2,34 @@
 
 namespace App\Http\Controllers;
 use App\User;
+use function GuzzleHttp\json_decode;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserValidate;
-use Illuminate\Validation\Rule;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Http\JsonResponse;
 
 class UsersController extends Controller
 {
-    public function rules(Request $request){
-        $response = new User();
-        $response->validationRules = [
-            'name' => 'required|max:255',
-            'email' => 'required|max:255|email|unique:users,email',
-            'password' => 'required|max:15|min:6',
-            'passwordConfirmation' => 'required|same:password',
-        ];
-        $response->validationRulesUpdate = [
-            'name' => 'required|max:255',
-            'email' => ['required',
-                Rule::unique('users')->ignore($request->userId),
-                ]
-        ];
-
-        return $response;
-    }
-
     public function index() {
-
-        $users = User::all()
+        // User management 
+        try{
+            // Get user list
+            $res = $this->client->get(env('API_BASE_URL').'admin/users');
+            
+            // Parse response
+            $users = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.users.index")
+                ->with('users', $users)
             ;
-        return view("pages.backend.users.index")
-            ->with('users', $users)
-            ;
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
+        
     }
 
     public function requestUser() {
@@ -50,59 +47,90 @@ class UsersController extends Controller
     }
 
     public function store(Request $request) {
-        $rules = $this->rules($request);
-        $validateData = $request->validate($rules->validationRules);
-        $name = $request->name;
-        $email = $request->email;
-        $password = $request->password ;
-        $passwordConfirmation = $request->passwordConfirmation;
-
-        $user = new User();
-        $user->name = $name;
-        $user->email = $email;
-
-        $user->password = \bcrypt($password);
-        $user->save();
-        // return response()->json([
-        //     'status' => 'guardado correctamente'
-        // ]);
-
-        return redirect()->route('users');
+        try{
+            // Build request body
+            $body = [
+                'name'      => $request->name,
+                'lastname'  => $request->lastname,
+                'email'     => $request->email,
+                'password'  => $request->password,
+                'enabled'   => $request->enabled,
+                'deleted'   => $request->deleted
+            ];
+            
+            // Store user
+            $this->client->post(env('API_BASE_URL').'admin/users',['body'=> json_encode($body)]);
+            
+            // Redirect to list
+            return redirect()->route('users');
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
     }
 
     public function edit($id){
-       $user = User::find($id);
-
-        // return $user;
-        return view("pages.backend.users.edit")
-            ->with('user',$user)
+        try {
+            // Get user list
+            $res = $this->client->get(env('API_BASE_URL').'admin/users/'.$id);
+            
+            // Parse response
+            $user = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.users.edit")
+                ->with('user', $user)
             ;
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
+    }
+    
+    
+    public function update(Request $request) {
+        try{
+            // Build request body
+            $body = [
+                'id'        => $request->id,
+                'name'      => $request->name,
+                'lastname'  => $request->lastname,
+                'phone'     => $request->phone,
+                'password'  => $request->password,
+                'enabled'   => $request->enabled == 'on'?true:false,
+                'deleted'   => $request->deleted == 'on'?true:false
+            ];
+            // Update admin user
+            $this->client->put(env('API_BASE_URL').'admin/users/'.$request->id, ['body'=> json_encode($body)]);
+            
+            // Redirect to list
+            return redirect()->route('users');
+            
+        } catch(RequestException $e){
+            $exception = (string) $e->getResponse()->getBody();
+            dd($exception);
+            $exception = json_decode($exception);
+            $jsonResponse = new JsonResponse($exception, $e->getCode());
+            
+            // Handle format error
+            if($e->getCode() == 422) {
+                return redirect()->route('users/edit', $request->id)->withErrors($jsonResponse->getData());
+            }
+            // Handle client unexpected error
+            return $this->handleError($e->getCode());
+        }
+        
     }
 
     public function details($id) {
        $user = User::find($id);
-
+        
         return view("pages.backend.users.details")
             ->with('user', $user)
-            ;
+        ;
     }
-
-
-    public function update(Request $request) {
-        $rules = $this->rules($request);
-        $validateData = $request->validate($rules->validationRulesUpdate);
-        $name = $request->name;
-        $email = $request->email;
-        $id = $request->userId;
-
-        $user = User::find($id);
-        $user->name = $name;
-        $user->email = $email;
-        $user->save();
-
-        return redirect()->route('users');
-    }
-
 
     public function destroy($id){
 
