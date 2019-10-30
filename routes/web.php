@@ -13,6 +13,7 @@
 
 Route::get('/login', 'AuthController@login')->name('login');
 Route::post('/login', 'AuthController@storeSession')->name('login');
+Route::post('/users/store', 'UsersController@store')->name('users/store');
 
 Route::group(['middleware' => ['admin.auth']], function () {
     

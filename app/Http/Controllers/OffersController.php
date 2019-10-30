@@ -7,6 +7,7 @@ use function GuzzleHttp\json_encode;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class OffersController extends Controller
 {
@@ -266,6 +267,8 @@ class OffersController extends Controller
             // Return view
             return view("pages.public.offer")
                 ->with('offer',$offer)
+                ->with('companyFriendlyName',$company)
+                ->with('offerCode',$code)
             ;
         } catch(ClientException $e){
             return $this->handleError($e->getCode());
@@ -274,30 +277,75 @@ class OffersController extends Controller
         }
     }
     
-    public function storeApplyment(Request $request)
+    public function storeApplyment(Request $request, $company, $code)
     {
-        
         try{
-            // Build request body
-            $body = [
-                'all' => $request->all(),
-                'name' => $request->name,
-                'lastname' => $request->lastname,
-                'email' => $request->email,
-                'password' => $request->password,
-                'adminUserRoleId' => $request->adminUserRoleId,
-            ];
-            
-            // Store admin user
-            $this->client->post(env('API_BASE_URL').'admin/admin-users',['body'=> json_encode($body)]);
+            if ($request->hasFile('curriculum')) {
+                $fileName = 'xxx.jpg';
+                $request->curriculum->storeAs('public/curriculum', $fileName);
+//                 dd(asset('storage/curriculum/'.$fileName));
+                // Build request body
+                $body = [
+                    'name' => $request->name,
+                    'lastname' => $request->lastname,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'company' => $company,
+                    'offerCode' => $code
+                ];
+                
+//                 dd($this->curlGetContents(asset('storage/curriculum/'.$fileName)));
+                
+                // Store admin user
+                $res = $this->client->request('POST',env('API_BASE_URL').'user',[
+                    'multipart' => [
+                        [
+                            'name'     => 'curriculum',
+                            'contents' => asset('storage/curriculum/'.$fileName),
+                            'filename' => 'curriculum'
+                        ],
+                        [
+                            'name'     => 'body',
+                            'contents' => json_encode($body)
+                        ]
+                    ],
+                    
+                ]);
+//                 $bod = $res->getBody();
+//                 // Implicitly cast the body to a string and echo it
+//                 echo $bod;
+//                 // Explicitly cast the body to a string
+//                 $stringBody = (string) $bod;
+//                 // Read 10 bytes from the body
+//                 $tenBytes = $bod->read(10);
+//                 // Read the remaining contents of the body as a string
+//                 $remainingBytes = $bod->getContents();
+//                 dd('XXX', $bod, $stringBody, $tenBytes, $remainingBytes);
+                
+            } else {
+                // Handle error
+            }
             
             // Redirect to list
-            return redirect()->route('admin-users');
+            return redirect()->route('offer/public', ['company' => $company, 'code' => $code])->with('disabledSubmit', true);
         } catch(ClientException $e){
+
             return $this->handleError($e->getCode());
         } catch(ServerException $e){
             return $this->handleError($e->getCode());
         }
+    }
+    
+    private function curlGetContents($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Kiworx');
+        $data = curl_exec($ch);
+        curl_close($ch);
+        return $data;
     }
     
 }
