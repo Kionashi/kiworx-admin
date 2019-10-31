@@ -7,6 +7,10 @@ use function GuzzleHttp\json_encode;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Storage;
 
 class OffersController extends Controller
 {
@@ -253,4 +257,74 @@ class OffersController extends Controller
 
         return redirect()->route('offers');
     }
+    
+    public function publicDetail($company, $code)
+    {
+        try {
+            // Get admin user roles
+            $res = $this->client->get(env('API_BASE_URL').'offers/'.$code);
+            
+            // Parse response
+            $offer = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.public.offer")
+                ->with('offer',$offer)
+                ->with('companyFriendlyName',$company)
+                ->with('offerCode',$code)
+            ;
+        } catch(ClientException $e){
+            return $this->handleError($e->getCode());
+        } catch(ServerException $e){
+            return $this->handleError($e->getCode());
+        }
+    }
+    
+    public function storeApplyment(Request $request, $company, $code)
+    {
+        try {
+            if ($request->hasFile('curriculum') && $request->curriculum->extension() == 'pdf') {
+                // Store file
+                $fileName = Str::random(10).'.'.$request->curriculum->extension();
+                $request->curriculum->storeAs('public/curriculum', $fileName);
+                
+                // Build request body
+                $body = [
+                    'name' => $request->name,
+                    'lastname' => $request->lastname,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'company' => $company,
+                    'offerCode' => $code,
+                    'curriculum' => asset('storage/curriculum/'.$fileName)
+                ];
+                
+                // Store applyment
+                $res = $this->client->post(env('API_BASE_URL').'user', ['body'=> json_encode($body)]);
+                $bod = $res->getBody();
+                
+                // Explicitly cast the body to a string
+                $stringBody = json_decode($bod);
+                
+                if (property_exists($stringBody->response, 'oldCurriculum') && $stringBody->response->oldCurriculum) {
+                    // Get name
+                    $oldCurriculum = substr($stringBody->response->oldCurriculum, -14);
+                    
+                    // Delete old CV
+                    Storage::disk('public')->delete('/curriculum/'.$oldCurriculum);
+                    
+                }
+                
+            } else {
+                return redirect()->route('offer/public', ['company' => $company, 'code' => $code])->with('errorMessage', 'Wrong format, please upload your CV as PDF');
+            }
+            
+            // Redirect to list
+            return redirect()->route('offer/public', ['company' => $company, 'code' => $code])->with('disabledSubmit', true);
+        } catch(RequestException $e) {
+            // Handle error
+            return $this->handleError($e->getCode());
+        }
+    }
+    
 }

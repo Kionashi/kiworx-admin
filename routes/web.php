@@ -13,6 +13,7 @@
 
 Route::get('/login', 'AuthController@login')->name('login');
 Route::post('/login', 'AuthController@storeSession')->name('login');
+Route::post('/users/store', 'UsersController@store')->name('users/store');
 
 Route::group(['middleware' => ['admin.auth']], function () {
     
@@ -56,6 +57,10 @@ Route::group(['middleware' => ['admin.auth']], function () {
     Route::get('/offers/delete/{id}', 'OffersController@destroy')->name('offers/delete');
     
 });
+
+// Job board
+Route::get('/{company}/jobs/{code}', 'OffersController@publicDetail')->name('offer/public');
+Route::post('/{company}/jobs/{code}', 'OffersController@storeApplyment')->name('offer/apply');
 
 //Test
 Route::get('/test', 'TestsController@test')->name('test');
