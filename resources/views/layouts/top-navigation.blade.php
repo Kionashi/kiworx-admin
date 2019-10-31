@@ -18,38 +18,24 @@
 						<li><a href="{{route('logout')}}"><i class="fa fa-sign-out pull-right"></i>
 								Log Out</a></li>
 					</ul></li>
-
-				<li role="presentation" class="dropdown"><a href="javascript:;"
-					class="dropdown-toggle info-number" data-toggle="dropdown"
-					aria-expanded="false"> <i class="fa fa-envelope-o"></i> <span
+					
+					<li role="presentation" class="dropdown"><a href="javascript:;"
+						class="dropdown-toggle info-number" data-toggle="dropdown"
+						aria-expanded="false"> <i class="fa fa-envelope-o"></i> <span
 						class="badge bg-green">6</span>
-				</a>
-					<ul id="menu1" class="dropdown-menu list-unstyled msg_list"
-						role="menu">
-						<li><a> <span class="image"><img src="{{ asset('images/male-user.png') }}"
-									alt="Profile Image" /></span> <span> <span>John Smith</span>
+					</a>
+					<ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+						@foreach(session('notifications') as $count => $notification)
+							@if($count < 6 )
+					<li><a href="#notification-{{$count}}"> <span class="image"><img src="{{ asset('images/male-user.png') }}"
+								alt="Profile Image" /></span> <span> <span>{{$notification['title']}}</span>
 									<span class="time">3 mins ago</span>
-							</span> <span class="message"> Film festivals used to be
+								</span> <span class="message"> Film festivals used to be
 									do-or-die moments for movie makers. They were where... </span>
-						</a></li>
-						<li><a> <span class="image"><img src="{{ asset('images/male-user.png') }}"
-									alt="Profile Image" /></span> <span> <span>John Smith</span>
-									<span class="time">3 mins ago</span>
-							</span> <span class="message"> Film festivals used to be
-									do-or-die moments for movie makers. They were where... </span>
-						</a></li>
-						<li><a> <span class="image"><img src="{{ asset('images/male-user.png') }}"
-									alt="Profile Image" /></span> <span> <span>John Smith</span>
-									<span class="time">3 mins ago</span>
-							</span> <span class="message"> Film festivals used to be
-									do-or-die moments for movie makers. They were where... </span>
-						</a></li>
-						<li><a> <span class="image"><img src="{{ asset('images/male-user.png') }}"
-									alt="Profile Image" /></span> <span> <span>John Smith</span>
-									<span class="time">3 mins ago</span>
-							</span> <span class="message"> Film festivals used to be
-									do-or-die moments for movie makers. They were where... </span>
-						</a></li>
+								</a></li>
+							@endif
+						@endforeach
+						
 						<li>
 							<div class="text-center">
 								<a> <strong>See All Alerts</strong> <i

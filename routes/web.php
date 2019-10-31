@@ -16,7 +16,7 @@ Route::post('/login', 'AuthController@storeSession')->name('login');
 Route::get('/password-recovery', 'AuthController@passwordRecovery')->name('password-recovery');
 Route::post('/password-recovery', 'AuthController@passwordEmail')->name('password-recovery');
 
-Route::group(['middleware' => ['admin.auth']], function () {
+Route::group(['middleware' => ['admin.auth','admin.notifications']], function () {
     
     // Home
     Route::get('/', 'HomeController@index')->name('home');
