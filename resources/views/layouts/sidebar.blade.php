@@ -42,6 +42,10 @@
 			<li>
 				<a href="{{route('offers')}}"><i class="fa fa-table"></i> Ofertas</a>
 			</li>
+			
+			<li>
+				<a href="{{route('candidates')}}"><i class="fa fa-group"></i> Base de candidatos</a>
+			</li>
 		</ul>
 	</div>
 	

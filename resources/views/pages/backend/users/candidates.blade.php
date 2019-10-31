@@ -10,37 +10,38 @@
 				<h2>
 					Candidatos <small>List</small>
 				</h2>
-				<ul class="nav navbar-right panel_toolbox">
-					<li><a href="{{route('admin-users/create')}}">Nuevo registro <i class="fa fa-plus"></i></a></li>
-				</ul>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
 				@if (isset($users))
-				<table id="datatable-buttons"
-					class="table table-striped table-bordered">
+				<table id="datatable-buttons" class="table table-striped table-bordered">
 					<thead>
 						<tr>
 							<th>Nombre</th>
 							<th>Correo</th>
-							<th>Habilitado</th>
-							<th>Eliminado</th>
+							<th>Teléfono</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
 					<tbody>
 						@foreach($users as $user)
 						<tr style="height: 40px;">
-							<td>{{ $user['name'] }}</td>
+							<td>
+								<!-- Hidden fields -->
+								<p style="display: none;">{{ $user['id'] }}</p>
+								<!-- End hidden fields -->
+								
+								{{ $user['name'] }} {{ $user['lastname'] }}
+							</td>
 							<td>{{ $user['email'] }}</td>
-							<td>{{ $user['enabled']?'0':'X' }}</td>
-							<td>{{ $user['deleted']?'0':'X' }}</td>
-							<td><a href="{{route('users/details', $user['id'])}}"
-								title="Detalles" class="icon-table"><i class="fa fa-search"></i></a>
-								<a href="{{route('users/edit', $user['id'])}}"
-								title="Editar" class="icon-table"><i class="fa fa-edit"></i></a>
-								<a href="{{route('users/delete', $user['id'])}}"
-								title="Eliminar" class="icon-table"><i class="fa fa-trash"></i></a>
+							<td>{{ $user['phone'] }}</td>
+							<td>
+								<a href="{{$user['curriculum']}}" download title="Descargar CV" class="icon-table">
+									<i class="fa fa-download"></i>
+								</a>
+								<a href="mailto:{{$user['email']}}" title="Escribir correo" class="icon-table">
+									<i class="fa fa-envelope"></i>
+								</a>
 							</td>
 						</tr>
 						@endforeach

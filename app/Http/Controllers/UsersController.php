@@ -2,39 +2,34 @@
 
 namespace App\Http\Controllers;
 use App\User;
+use function GuzzleHttp\json_decode;
+use function GuzzleHttp\json_encode;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserValidate;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UsersController extends Controller
 {
-    public function rules(Request $request){
-        $response = new User();
-        $response->validationRules = [
-            'name' => 'required|max:255',
-            'email' => 'required|max:255|email|unique:users,email',
-            'password' => 'required|max:15|min:6',
-            'passwordConfirmation' => 'required|same:password',
-        ];
-        $response->validationRulesUpdate = [
-            'name' => 'required|max:255',
-            'email' => ['required',
-                Rule::unique('users')->ignore($request->userId),
-                ]
-        ];
-
-        return $response;
-    }
-
     public function index() {
-
-        $users = User::all()
+        // User management 
+        try{
+            // Get user list
+            $res = $this->client->get(env('API_BASE_URL').'admin/users');
+            
+            // Parse response
+            $users = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.users.index")
+                ->with('users', $users)
             ;
-        return view("pages.backend.users.index")
-            ->with('users', $users)
-            ;
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
     }
-
+    
     public function requestUser() {
         $users = User::where('status', 'ENABLED')
         ->orderBy('updated_at', 'DESC')
@@ -44,74 +39,149 @@ class UsersController extends Controller
             'users' => $users
         ]);
     }
-
+    
     public function create() {
         return view('pages.backend.users.create');
     }
-
+    
     public function store(Request $request) {
-        $rules = $this->rules($request);
-        $validateData = $request->validate($rules->validationRules);
-        $name = $request->name;
-        $email = $request->email;
-        $password = $request->password ;
-        $passwordConfirmation = $request->passwordConfirmation;
-
-        $user = new User();
-        $user->name = $name;
-        $user->email = $email;
-
-        $user->password = \bcrypt($password);
-        $user->save();
-        // return response()->json([
-        //     'status' => 'guardado correctamente'
-        // ]);
-
-        return redirect()->route('users');
+        try{
+            // Build request body
+            if ($request->hasFile('curriculum') && $request->curriculum->extension() == 'pdf') {
+                // Store file
+                $fileName = Str::random(10).'.'.$request->curriculum->extension();
+                $request->curriculum->storeAs('public/curriculum', $fileName);
+                
+                // Build request body
+                $body = [
+                    'name' => $request->name,
+                    'lastname' => $request->lastname,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'curriculum' => asset('storage/curriculum/'.$fileName)
+                ];
+                
+                // Store applyment
+                $res = $this->client->post(env('API_BASE_URL').'user', ['body'=> json_encode($body)]);
+                $bod = $res->getBody();
+                
+                // Explicitly cast the body to a string
+                $stringBody = json_decode($bod);
+                
+                if (property_exists($stringBody->response, 'oldCurriculum') && $stringBody->response->oldCurriculum) {
+                    // Get name
+                    $oldCurriculum = substr($stringBody->response->oldCurriculum, -14);
+                    
+                    // Delete old CV
+                    Storage::disk('public')->delete('/curriculum/'.$oldCurriculum);
+                    
+                }
+                
+            } else {
+                return redirect()->route('users')->with('errorMessage', 'Wrong format, please upload your CV as PDF');
+            }
+            
+            // Redirect to list
+            return redirect()->route('users');
+            
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
     }
-
+    
     public function edit($id){
-       $user = User::find($id);
-
-        // return $user;
-        return view("pages.backend.users.edit")
-            ->with('user',$user)
+        try {
+            // Get user list
+            $res = $this->client->get(env('API_BASE_URL').'admin/users/'.$id);
+            
+            // Parse response
+            $user = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.users.edit")
+                ->with('user', $user)
             ;
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+    }
+    
+    
+    public function update(Request $request) {
+        try{
+            // Build request body
+            $body = [
+                'id'        => $request->id,
+                'name'      => $request->name,
+                'lastname'  => $request->lastname,
+                'phone'     => $request->phone,
+                'password'  => $request->password,
+                'enabled'   => $request->enabled == 'on'?true:false,
+                'deleted'   => $request->deleted == 'on'?true:false
+            ];
+            // Update admin user
+            $this->client->put(env('API_BASE_URL').'admin/users/'.$request->id, ['body'=> json_encode($body)]);
+            
+            // Redirect to list
+            return redirect()->route('users');
+            
+        } catch(RequestException $e){
+            $exception = (string) $e->getResponse()->getBody();
+            $exception = json_decode($exception);
+            $jsonResponse = new JsonResponse($exception, $e->getCode());
+            
+            // Handle format error
+            if($e->getCode() == 422) {
+                return redirect()->route('users/edit', $request->id)->withErrors($jsonResponse->getData());
+            }
+            // Handle client unexpected error
+            return $this->handleError($e->getCode());
+        }
+        
     }
 
     public function details($id) {
-       $user = User::find($id);
-
-        return view("pages.backend.users.details")
-            ->with('user', $user)
+        try {
+            // Get user
+            $res = $this->client->get(env('API_BASE_URL').'admin/users/'.$id);
+            $user = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.users.details")
+                ->with('user', $user)
             ;
+        } catch(RequestException $e) {
+            // Handle client unexpected error
+            return $this->handleError($e->getCode());
+        }
+        
     }
-
-
-    public function update(Request $request) {
-        $rules = $this->rules($request);
-        $validateData = $request->validate($rules->validationRulesUpdate);
-        $name = $request->name;
-        $email = $request->email;
-        $id = $request->userId;
-
-        $user = User::find($id);
-        $user->name = $name;
-        $user->email = $email;
-        $user->save();
-
-        return redirect()->route('users');
-    }
-
 
     public function destroy($id){
 
         $user = User::find($id);
         $user->delete();
         return redirect()->route('users');
-        // return response()->json([
-        //     'status' => 'Eliminado correctamente'
-        // ]);
 
     }
+    
+    public function candidatesDatabase() {
+        // User management
+        try{
+            // Get user list
+            $res = $this->client->get(env('API_BASE_URL').'admin/users');
+            
+            // Parse response
+            $users = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.users.candidates")
+            ->with('users', $users)
+            ;
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+        
+    }
+    
 }

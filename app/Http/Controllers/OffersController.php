@@ -8,7 +8,6 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Storage;
 
@@ -76,9 +75,7 @@ class OffersController extends Controller
             return view("pages.backend.offers.create")
                 ->with('companies',$companies)
             ;
-        } catch(ClientException $e){
-            dd($e);
-        } catch(ServerException $e){
+        } catch(RequestException $e){
             dd($e->getCode());
         }
     }
@@ -100,9 +97,7 @@ class OffersController extends Controller
                 'body'=> json_encode($body)
             ]);
             return redirect()->route('offers');
-        } catch(ClientException $e){
-            dd($e);
-        } catch(ServerException $e){
+        } catch(RequestException $e){
             dd($e->getCode());
         }
         
@@ -193,9 +188,7 @@ class OffersController extends Controller
                 ->with('offer', $offer)
                 ->with('applicants', $applicants)
             ;
-        } catch(ClientException $e){
-            dd($e);
-        } catch(ServerException $e){
+        } catch(RequestException $e){
             dd($e->getCode());
         }
     }
@@ -236,9 +229,7 @@ class OffersController extends Controller
                 'companyId' => $request->companyId,
             ];
             $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$request->id, ['body'=> json_encode($body)]);
-        } catch(ClientException $e){
-            dd($e);
-        } catch(ServerException $e){
+        } catch(RequestException $e){
             dd($e->getCode());
         }
         $response = json_decode($res->getBody());
@@ -249,10 +240,8 @@ class OffersController extends Controller
        
         try{
             $res = $this->client->delete(env('API_BASE_URL').'admin/offers/'.$id);
-        } catch(ClientException $e){
-            dd($e);
-        } catch(ServerException $e){
-            dd($e->getCode());
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
         }
 
         return redirect()->route('offers');
@@ -273,9 +262,7 @@ class OffersController extends Controller
                 ->with('companyFriendlyName',$company)
                 ->with('offerCode',$code)
             ;
-        } catch(ClientException $e){
-            return $this->handleError($e->getCode());
-        } catch(ServerException $e){
+        } catch(RequestException $e){
             return $this->handleError($e->getCode());
         }
     }
