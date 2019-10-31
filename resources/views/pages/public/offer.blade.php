@@ -130,6 +130,7 @@
                         	<input type="button" disabled class="btn btn-success btn-block btn-sm" value="Thanks for applying" />
                         @else
                         	<a href="#ModalCenter1" class="btn btn-custom btn-block btn-sm" data-toggle="modal" data-target="#ModalCenter1">Apply For Job</a>
+                        	<p style="color:red;">{{session('errorMessage')}}</p>
                         @endif
                     </div>
                 </div>

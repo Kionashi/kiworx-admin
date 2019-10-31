@@ -38,17 +38,18 @@
                                         <input name="phone" id="phone" type="text" class="form-control blog-details f-15 pt-2" placeholder="Phone" required>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-sm-12">
-                                    <div class="input-group mt-2 mb-2">
-                                            <input type="file" name="curriculum" />
+                                <div class="col-lg-12">
+                                	<div class="input-group mt-2 mb-2">
+                                        <div class="custom-file">
+                                            <input type="file" name="curriculum" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+                                            <label class="custom-file-label" for="inputGroupFile01"><i class="mdi mdi-cloud-upload mr-1"></i>Upload CV</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row mt-3">
                                 <div class="col-sm-12 text-right">
-                                    <input type="submit" id="submit3" name="submit" class="btn-block btn btn-custom" value="Register Now">
+                                    <input type="submit" id="submit3" name="submit" class="btn-block btn btn-custom" value="Apply Now">
                                 </div>
                             </div>
                         </form>

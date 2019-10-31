@@ -8,6 +8,9 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Storage;
 
 class OffersController extends Controller
 {
@@ -263,7 +266,7 @@ class OffersController extends Controller
             
             // Parse response
             $offer = json_decode($res->getBody(),true);
-//             dd($offer);
+            
             // Return view
             return view("pages.public.offer")
                 ->with('offer',$offer)
@@ -279,11 +282,12 @@ class OffersController extends Controller
     
     public function storeApplyment(Request $request, $company, $code)
     {
-        try{
-            if ($request->hasFile('curriculum')) {
-                $fileName = 'xxx.jpg';
+        try {
+            if ($request->hasFile('curriculum') && $request->curriculum->extension() == 'pdf') {
+                // Store file
+                $fileName = Str::random(10).'.'.$request->curriculum->extension();
                 $request->curriculum->storeAs('public/curriculum', $fileName);
-//                 dd(asset('storage/curriculum/'.$fileName));
+                
                 // Build request body
                 $body = [
                     'name' => $request->name,
@@ -291,61 +295,36 @@ class OffersController extends Controller
                     'email' => $request->email,
                     'phone' => $request->phone,
                     'company' => $company,
-                    'offerCode' => $code
+                    'offerCode' => $code,
+                    'curriculum' => asset('storage/curriculum/'.$fileName)
                 ];
                 
-//                 dd($this->curlGetContents(asset('storage/curriculum/'.$fileName)));
+                // Store applyment
+                $res = $this->client->post(env('API_BASE_URL').'user', ['body'=> json_encode($body)]);
+                $bod = $res->getBody();
                 
-                // Store admin user
-                $res = $this->client->request('POST',env('API_BASE_URL').'user',[
-                    'multipart' => [
-                        [
-                            'name'     => 'curriculum',
-                            'contents' => asset('storage/curriculum/'.$fileName),
-                            'filename' => 'curriculum'
-                        ],
-                        [
-                            'name'     => 'body',
-                            'contents' => json_encode($body)
-                        ]
-                    ],
+                // Explicitly cast the body to a string
+                $stringBody = json_decode($bod);
+                
+                if (property_exists($stringBody->response, 'oldCurriculum') && $stringBody->response->oldCurriculum) {
+                    // Get name
+                    $oldCurriculum = substr($stringBody->response->oldCurriculum, -14);
                     
-                ]);
-//                 $bod = $res->getBody();
-//                 // Implicitly cast the body to a string and echo it
-//                 echo $bod;
-//                 // Explicitly cast the body to a string
-//                 $stringBody = (string) $bod;
-//                 // Read 10 bytes from the body
-//                 $tenBytes = $bod->read(10);
-//                 // Read the remaining contents of the body as a string
-//                 $remainingBytes = $bod->getContents();
-//                 dd('XXX', $bod, $stringBody, $tenBytes, $remainingBytes);
+                    // Delete old CV
+                    Storage::disk('public')->delete('/curriculum/'.$oldCurriculum);
+                    
+                }
                 
             } else {
-                // Handle error
+                return redirect()->route('offer/public', ['company' => $company, 'code' => $code])->with('errorMessage', 'Wrong format, please upload your CV as PDF');
             }
             
             // Redirect to list
             return redirect()->route('offer/public', ['company' => $company, 'code' => $code])->with('disabledSubmit', true);
-        } catch(ClientException $e){
-
-            return $this->handleError($e->getCode());
-        } catch(ServerException $e){
+        } catch(RequestException $e) {
+            // Handle error
             return $this->handleError($e->getCode());
         }
-    }
-    
-    private function curlGetContents($url)
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Kiworx');
-        $data = curl_exec($ch);
-        curl_close($ch);
-        return $data;
     }
     
 }
