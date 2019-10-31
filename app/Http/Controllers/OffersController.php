@@ -239,19 +239,38 @@ class OffersController extends Controller
     public function destroy($id){
        
         try{
-            $res = $this->client->delete(env('API_BASE_URL').'admin/offers/'.$id);
+            $this->client->delete(env('API_BASE_URL').'admin/offers/'.$id);
         } catch(RequestException $e){
             return $this->handleError($e->getCode());
         }
-
+        
         return redirect()->route('offers');
+    }
+    
+    public function publicList($company)
+    {
+        try {
+            // Get admin user roles
+            $res = $this->client->get(env('API_BASE_URL').'offers/'.$company);
+            
+            // Parse response
+            $response = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.public.offers")
+                ->with('offers', $response['offers'])
+                ->with('company', $response['company'])
+            ;
+        } catch(RequestException $e) {
+            return $this->handleError($e->getCode());
+        }
     }
     
     public function publicDetail($company, $code)
     {
         try {
             // Get admin user roles
-            $res = $this->client->get(env('API_BASE_URL').'offers/'.$code);
+            $res = $this->client->get(env('API_BASE_URL').'offers/'.$code.'/jobs/'.$code);
             
             // Parse response
             $offer = json_decode($res->getBody(),true);
