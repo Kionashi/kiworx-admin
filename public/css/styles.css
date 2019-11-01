@@ -1,3 +1,12 @@
 .notification-icon {
     padding: 6px 7px;
 }
+
+.truncate-text{
+    white-space: nowrap !important; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+.bold{
+    font-weight: 600 !important;
+}

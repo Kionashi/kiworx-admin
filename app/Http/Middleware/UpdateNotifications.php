@@ -27,7 +27,15 @@ class UpdateNotifications
         try {
             $res = $client->get(env('API_BASE_URL').'admin/notifications/admin-user/'.session()->get('admin.id'));
             $notifications = json_decode($res->getBody(),true);
+            // dd($notifications);
+            $count = 0;
+            foreach($notifications as $notification){
+                if($notification['status'] == 'ACTIVE'){
+                    $count++;
+                }
+            }
             session([ 'notifications' => $notifications ]);
+            session([ 'activeNotificationsCount' => $count ]);
 
         } catch(ClientException $e){
             dd($e->getCode());

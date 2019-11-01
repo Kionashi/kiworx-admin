@@ -1,9 +1,6 @@
 <?php
-
 namespace App\Http;
-
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-
 class Kernel extends HttpKernel
 {
     /**
@@ -21,7 +18,6 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
     ];
-
     /**
      * The application's route middleware groups.
      *
@@ -42,7 +38,6 @@ class Kernel extends HttpKernel
             'bindings',
         ],
     ];
-
     /**
      * The application's route middleware.
      *
@@ -63,7 +58,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin.notifications' => \App\Http\Middleware\UpdateNotifications::class,
     ];
-
     /**
      * The priority-sorted list of middleware.
      *
