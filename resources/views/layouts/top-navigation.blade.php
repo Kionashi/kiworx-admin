@@ -27,11 +27,8 @@
 					<ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
 						@foreach(session('notifications') as $count => $notification)
 							@if($count < 6 )
-					<li><a href="#notification-{{$count}}"> <span class="image"><img src="{{ asset('images/male-user.png') }}"
-								alt="Profile Image" /></span> <span> <span>{{$notification['title']}}</span>
-									<span class="time">3 mins ago</span>
-								</span> <span class="message"> Film festivals used to be
-									do-or-die moments for movie makers. They were where... </span>
+								<li><a href="#notification-{{$count}}"> <span class="image notification-icon"><i class="fa fa-@if($notification['type'] == 'HIRING')users @elseif($notification['type'] == 'CALENDAR')calendar @elseif($notification['type'] == 'GENERAL')exclamation @endif"></i></span> <span> <span>{{$notification['title']}}</span>
+								</span> <span class="message notification-body" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{$notification['content']}}hasjhsahsa  sajh asjh ashj  hsja hA Y WYW WHYAS HSA A J  hs j ash sa asu asuw wh wha jas hsa as </span>
 								</a></li>
 							@endif
 						@endforeach
