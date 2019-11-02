@@ -37,7 +37,7 @@ class Controller extends BaseController
                 return view("pages.error.500");
                 break;
             default:
-                return view('auth.login');
+                return redirect()->route('login');
         }
     }
 }
