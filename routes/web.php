@@ -13,7 +13,8 @@
 
 Route::get('/login', 'AuthController@login')->name('login');
 Route::post('/login', 'AuthController@storeSession')->name('login');
-Route::post('/users/store', 'UsersController@store')->name('users/store');
+Route::get('/password-recovery', 'AuthController@passwordRecovery')->name('password-recovery');
+Route::post('/password-recovery', 'AuthController@passwordEmail')->name('password-recovery');
 
 Route::group(['middleware' => ['admin.auth']], function () {
     
@@ -21,6 +22,9 @@ Route::group(['middleware' => ['admin.auth']], function () {
     Route::get('/logout', 'AuthController@logout')->name('logout');
     
     // Admin Users
+    Route::get('/profile', 'AdminUsersController@profile')->name('profile');
+    Route::get('/change-password', 'AdminUsersController@changePassword')->name('change-password');
+    Route::post('/change-password', 'AdminUsersController@updatePassword')->name('change-password');
     Route::get('/admin-users', 'AdminUsersController@index')->name('admin-users');
     Route::get('/admin-users/create', 'AdminUsersController@create')->name('admin-users/create');
     Route::post('/admin-users/store', 'AdminUsersController@store')->name('admin-users/store');

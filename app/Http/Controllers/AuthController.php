@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 
-use GuzzleHttp\Client;
 use function GuzzleHttp\json_decode;
 use function GuzzleHttp\json_encode;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
 
 class AuthController extends Controller
 {
@@ -17,9 +15,6 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
 
     /**
      * Show the application dashboard.
@@ -38,11 +33,47 @@ class AuthController extends Controller
         
         return view('auth.login');
     }
+    
+    public function passwordRecovery()
+    {
+        return view('auth.passwords.email');
+    }
+    
+    public function passwordEmail(Request $request)
+    {
+        try {
+            // Initialize Guzzle client
+            $url = env('API_BASE_URL').'password-recovery';
+            
+            $rules = array(
+                'email' => 'required|email'
+            );
+            $this->validate($request, $rules);
+            
+            // Build request
+            $body = array();
+            $body['email'] = $request->input('email');
+            
+            // Send http request
+            $req = $this->client->post($url,  ['body' => json_encode($body)]);
+            
+            // Redirect to home
+            return redirect()->route('login')->with('successMsg', 'We have sent a link to your e-mail account so you can restore your password.');
+            
+        } catch(RequestException $e) {
+//             dd($e->getResponse()->getBody()->getContents());
+            if ($e->getCode() == 406) return redirect()->route('password-recovery')->withErrors(json_decode($e->getResponse()->getBody()->getContents())->error);
+            
+            // External errors
+            return $this->handleError($e->getCode());
+        }
+        
+    }
+    
     public function storeSession(Request $request)
     {
         try {
             // Initialize Guzzle client
-            $client = new \GuzzleHttp\Client();
             $url = env('API_BASE_URL').'admin/login';
             
             // Build request
@@ -51,7 +82,7 @@ class AuthController extends Controller
             $body['password'] = $request->input('password');
             
             // Send http request
-            $req = $client->post($url,  ['body' => json_encode($body)]);
+            $req = $this->client->post($url,  ['body' => json_encode($body)]);
             $response = json_decode($req->getBody());
             
             $isAdmin = false;
@@ -73,12 +104,13 @@ class AuthController extends Controller
             // Redirect to home
             return redirect()->route('home');
             
-        } catch(ClientException $e) {
-            // Error 4XX
-            return $this->handleError($e->code);
-        } catch(ServerException $e) {
-            // Error 5XX
-            return $this->handleError($e->code);
+        } catch(RequestException $e) {
+            // Login failed
+//             dd(json_decode($e->getResponse()->getBody()->getContents())->error);
+            if ($e->getCode() == 401) return redirect()->route('login')->withErrors(json_decode($e->getResponse()->getBody()->getContents())->error);
+            
+            // External errors
+            return $this->handleError($e->getCode());
         }
         
     }
