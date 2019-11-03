@@ -266,7 +266,7 @@ class OffersController extends Controller
         }
     }
     
-    public function publicDetail($company, $code)
+    public function publicDetail(Request $request, $company, $code)
     {
         try {
             // Get admin user roles
@@ -275,6 +275,14 @@ class OffersController extends Controller
             // Parse response
             $offer = json_decode($res->getBody(),true);
             
+            // Store view
+            $body = array(
+                'clientIp' => $request->ip(),
+                'clientUserAgent' => $request->server('HTTP_USER_AGENT'),
+                'offerId' => $offer['id']
+            );
+            $res = $this->client->post(env('API_BASE_URL').'offer-views', ['body'=> json_encode($body)]);
+            
             // Return view
             return view("pages.public.offer")
                 ->with('offer',$offer)
@@ -282,6 +290,7 @@ class OffersController extends Controller
                 ->with('offerCode',$code)
             ;
         } catch(RequestException $e){
+            dd($e);
             return $this->handleError($e->getCode());
         }
     }
