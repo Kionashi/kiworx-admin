@@ -44,7 +44,7 @@
 			</li>
 			
 			<li>
-				<a href="{{route('candidates')}}"><i class="fa fa-group"></i> Base de candidatos</a>
+				<a href="{{route('candidates')}}"><i class="fa fa-group"></i> Candidates Database</a>
 			</li>
 		</ul>
 	</div>
