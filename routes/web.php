@@ -20,6 +20,9 @@ Route::group(['middleware' => ['admin.auth']], function () {
     
     // Home
     Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/help', 'HelpController@index')->name('help');
+    Route::post('/help', 'HelpController@getHomeData')->name('help');
+    
     Route::post('/search-home', 'HomeController@getHomeData')->name('search-home');
     
     Route::get('/logout', 'AuthController@logout')->name('logout');
