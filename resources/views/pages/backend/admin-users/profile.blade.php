@@ -78,7 +78,7 @@
                     <div class="ln_solid"></div>
                     
                     <div class="form-group">
-                        <div class="col-md-3 col-sm-3 col-xs-12 col-md-offset-3">
+                        <div class="col-md-9 col-sm-12 col-xs-12 col-md-offset-3">
                             <a href="{{route('home')}}" class="btn btn-primary">Back</a>
                             <input type="submit" class="btn btn-success" value="Save" />
                             <a href="{{route('change-password')}}" class="btn btn-success">Change password</a>
