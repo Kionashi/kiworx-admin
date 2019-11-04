@@ -19,7 +19,6 @@ class HomeController extends Controller
             
             $homeData = $this->homeData();
 //             dd($homeData);
-            
             // Return view
             return view('pages.home')
                 ->with('offers', $homeData['offers'])

@@ -6,7 +6,7 @@
 	<div class="col-md-4 col-sm-4 col-xs-12">
 		<select id="jobTitle" name="jobTitle" required="required"
 			class="form-control col-md-7 col-xs-12">
-			<option value="0">Todas</option>
+			<option value="0">All</option>
 			@foreach($offers as $offer)
 				<option value="{{$offer['id']}}">{{$offer['job_title']}}</option>
 			@endforeach
@@ -28,12 +28,12 @@
 <!-- top tiles -->
 <div class="row tile_count">
 	<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-		<span class="counTitlet_top"><i class="fa fa-eye"></i> Visualizaciones</span>
+		<span class="counTitlet_top"><i class="fa fa-eye"></i> Views</span>
 		<div id="viewsCount" class="count">{{$viewsCount}}</div>
 <!-- 		<span class="count_bottom"><i class="green">4% </i> From last Week</span> -->
 	</div>
 	<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-		<span class="count_top"><i class="fa fa-users"></i> Aplicantes</span>
+		<span class="count_top"><i class="fa fa-users"></i> Applicants</span>
 		<div id="applicantsCount" class="count">{{$applicantsCount}}</div>
 <!-- 		<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3%</i> From last Week</span> -->
 	</div>
@@ -43,12 +43,12 @@
 <!-- 		<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34%</i> From last Week</span> -->
 	</div>
 	<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-		<span class="count_top"><i class="fa fa-user"></i> Contrataciones</span>
+		<span class="count_top"><i class="fa fa-user"></i> Hiring</span>
 		<div id="hiringCount" class="count">{{$hiringCount}}</div>
 <!-- 		<span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12%</i> From last Week</span> -->
 	</div>
 	<div class="col-md-4 col-sm-8 col-xs-12 tile_stats_count">
-		<span class="count_top"><i class="fa fa-clock-o"></i> Tiempo medio de contratación</span>
+		<span class="count_top"><i class="fa fa-clock-o"></i> Hiring time</span>
 		<div class="count">-</div>
 <!-- 		<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34%</i> From last Week</span> -->
 	</div>
@@ -75,193 +75,62 @@
 </div>
 
 <!-- /top tiles -->
-@endsection @section('extended-css') @endsection
-@section('extended-scripts')
-<script type="text/javascript">
-$(document).ready(function(){
+@endsection
 
-	$('#jobTitle').click(function(){
-		var startDate = $('#dateRange').data('daterangepicker').startDate._d;
+@section('extended-scripts')
+<script src="{{ asset('js/home.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	// Initial chart data
+	var chartViewData = [];
+	var chartApplicantData = [];
+	
+	@foreach($applicantsViewsChartData as $i => $applicantViewChartData)
+	chartApplicantData.push([
+		// Time
+		{{$i}},
+		// Count 
+		{{$applicantViewChartData['applicants']}}
+	]);
+	chartViewData.push([
+		// Time
+		{{$i}},
+		// Count 
+		{{$applicantViewChartData['views']}}
+	]);
+	@endforeach
+	
+	var maxDate = {{$maxDate}};
+	var minDate = {{$minDate}};
+	var searchUrl = '{{route("search-home")}}';
+	console.log('Initial');
+	console.log(maxDate);
+	// Filters
+	$('#jobTitle').change(function(){
+		var initDate = $('#dateRange').data('daterangepicker').startDate._d;
 		var endDate = $('#dateRange').data('daterangepicker').endDate._d;
 		var body = {
-			initDate: startDate.toISOString(),
+			initDate: initDate.toISOString(),
 			endDate: endDate.toISOString(),
 			offerId: $('#jobTitle').val()
 		};
 		
 		$.ajax({
 			type: 'POST',
-			url: '{{route("home")}}',
+			url: searchUrl,
 			dataType: 'json',
 			headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			data: body,
-			success: function(respuesta) {
-				// Update data
-				$('#viewsCount').text(respuesta.viewsCount);
-				$('#applicantsCount').text(respuesta.applicantsCount);
-				$('#kiwixCount').text(respuesta.kiwixCount);
-				$('#hiringCount').text(respuesta.hiringCount);
-			},
+			success: filterCallback,
 			error: function() {
-		        console.log("No se ha podido obtener la información");
-		    }
+				console.log("No se ha podido obtener la información");
+			}
 		});
 	});
 	
-	function init_daterangepicker_reservation() {
-		
-		if(typeof ($.fn.daterangepicker) === 'undefined'){ return; }
-	
-		$('#dateRange').daterangepicker(null, function(start, end, label) {
-			console.log(start.toISOString(), end.toISOString(), label);
-			console.log($('#jobTitle').val());
-			var body = {
-				initDate: start.toISOString(),
-				endDate: end.toISOString(),
-				offerId: $('#jobTitle').val()
-			};
-			
-			$.ajax({
-				type: 'POST',
-				url: '{{route("home")}}',
-				dataType: 'json',
-				headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-				data: body,
-				success: function(respuesta) {
-					// Update data
-					$('#viewsCount').text(respuesta.viewsCount);
-					$('#applicantsCount').text(respuesta.applicantsCount);
-					$('#kiwixCount').text(respuesta.kiwixCount);
-					$('#hiringCount').text(respuesta.hiringCount);
-					
-					console.log();
-				},
-				error: function() {
-			        console.log("No se ha podido obtener la información");
-			    }
-			});
-			
-		});
-
-	}
-	
-    function init_flot_chart(){
-    	
-    	if( typeof ($.plot) === 'undefined'){ return; }
-    	
-    	var chart_plot_02_data = [];
-    	var chart_plot_02_datax = [];
-    	
-    	@foreach($applicantsViewsChartData as $i => $applicantViewChartData)
-    		chart_plot_02_datax.push([
-    			// Time
-    			{{$i}},
-    			// Count 
-    			{{$applicantViewChartData['applicants']}}
-    		]);
-    		chart_plot_02_data.push([
-    			// Time
-    			{{$i}},
-    			// Count 
-    			{{$applicantViewChartData['views']}}
-    		]);
-    	@endforeach
-    	
-    	var maxDate = {{$maxDate}};
-    	var minDate = {{$minDate}};
-		
-    	var chart_plot_02_settings = {
-    		grid: {
-    			show: true,
-    			aboveData: true,
-    			color: "#3f3f3f",
-    			labelMargin: 10,
-    			axisMargin: 0,
-    			borderWidth: 0,
-    			borderColor: null,
-    			minBorderMargin: 5,
-    			clickable: true,
-    			hoverable: true,
-    			autoHighlight: true,
-    			mouseActiveRadius: 100
-    		},
-    		series: {
-    			lines: {
-    				show: true,
-    				fill: true,
-    				lineWidth: 2,
-    				steps: false
-    			},
-    			points: {
-    				show: true,
-    				radius: 4.5,
-    				symbol: "circle",
-    				lineWidth: 3.0
-    			}
-    		},
-    		legend: {
-    			position: "ne",
-    			margin: [0, -25],
-    			noColumns: 0,
-    			labelBoxBorderColor: null,
-    			labelFormatter: function(label, series) {
-    				return label + '&nbsp;&nbsp;';
-    			},
-    			width: 40,
-    			height: 1
-    		},
-    		colors: ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
-    		shadowSize: 0,
-    		tooltip: true,
-    		tooltipOpts: {
-    			content: "%s: %y.0",
-    			xDateFormat: "%d/%m",
-    		shifts: {
-    			x: -30,
-    			y: -50
-    		},
-    		defaultTheme: false
-    		},
-    		yaxis: {
-    			min: 0
-    		},
-    		xaxis: {
-    			mode: "time",
-    			minTickSize: [1, "day"],
-    			timeformat: "%d/%m/%y",
-    			min: minDate,
-    			max: maxDate
-    		}
-    	};	
-    	
-    	if ($("#view-apply-chart").length){
-    		
-    		$.plot( $("#view-apply-chart"), 
-    		[{ 
-    			label: "Visualizaciones", 
-    			data: chart_plot_02_data, 
-    			lines: { 
-    				fillColor: "rgba(150, 202, 89, 0.12)" 
-    			}, 
-    			points: { 
-    				fillColor: "#fff" } 
-    		},
-    		{ 
-    			label: "Aplicaciones", 
-    			data: chart_plot_02_datax, 
-    			lines: { 
-    				fillColor: "rgba(0, 0, 89, 0.12)" 
-    			}, 
-    			points: { 
-    				fillColor: "#fff" } 
-    		}
-    		], chart_plot_02_settings);
-    		
-    	}
-    } 
-    
-    init_flot_chart();
-    init_daterangepicker_reservation()
+	// Init chart
+	initKPIChart(minDate, maxDate, chartViewData, chartApplicantData);
+	init_daterangepicker_reservation(searchUrl);
 });
 </script>
 
