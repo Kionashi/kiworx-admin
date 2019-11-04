@@ -32,7 +32,6 @@
 								
 							@endif
 						@endforeach
-						
 						<li>
 							<div class="text-center">
 							<a href="{{route('notifications')}}"> <strong>Ver todas las notificaciones</strong> <i
