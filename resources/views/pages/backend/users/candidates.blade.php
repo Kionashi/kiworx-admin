@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('section', 'Administradores')
+@section('section', 'Candidates')
 @section('content')
 <div class="">
 	<div class="clearfix"></div>
@@ -8,7 +8,7 @@
 		<div class="x_panel">
 			<div class="x_title">
 				<h2>
-					Candidatos <small>List</small>
+					Candidates <small>List</small>
 				</h2>
 				<div class="clearfix"></div>
 			</div>
@@ -17,10 +17,10 @@
 				<table id="datatable-buttons" class="table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>Nombre</th>
-							<th>Correo</th>
-							<th>Teléfono</th>
-							<th>Acciones</th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Phone</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -36,10 +36,10 @@
 							<td>{{ $user['email'] }}</td>
 							<td>{{ $user['phone'] }}</td>
 							<td>
-								<a href="{{$user['curriculum']}}" download title="Descargar CV" class="icon-table">
+								<a href="{{$user['curriculum']}}" download title="Download CV" class="icon-table">
 									<i class="fa fa-download"></i>
 								</a>
-								<a href="mailto:{{$user['email']}}" title="Escribir correo" class="icon-table">
+								<a href="mailto:{{$user['email']}}" title="Write email" class="icon-table">
 									<i class="fa fa-envelope"></i>
 								</a>
 							</td>
