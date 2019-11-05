@@ -176,7 +176,7 @@ class UsersController extends Controller
             
             // Return view
             return view("pages.backend.users.candidates")
-            ->with('users', $users)
+                ->with('users', $users)
             ;
         } catch(RequestException $e){
             return $this->handleError($e->getCode());
