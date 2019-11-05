@@ -6,7 +6,7 @@
 		<div class="x_panel">
 			<div class="x_title">
 				<h2>
-					Notificaciones <small>Listar</small>
+					Alerts <small>List</small>
 				</h2>
 			
 				<div class="clearfix"></div>
@@ -18,29 +18,29 @@
 					class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>Título</th>
-                                <th>Tipo</th>
-                                <th>Contenido</th>
-                                <th>Acciones</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Content</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($notifications as $notification)
                             <tr style="height:40px;" class="truncate-text @if($notification['status'] == 'ACTIVE')bold @endif">
                                 <td>{{ $notification['title'] }}</td>
-                                <td>{{ $notification['type'] }}</td>
+                                <td>{{{\App\Enums\NotificationType::getFriendlyName($notification['type'])}}</td>
                                 <td>{{ $notification['content'] }} </td>
                                 <td>
-                                    <a href="{{route('notifications/details', $notification['id'])}}" title="Detalles" class="icon-table"><i class="fa fa-search"></i></a>
+                                    <a href="{{route('notifications/details', $notification['id'])}}" title="Details" class="icon-table"><i class="fa fa-search"></i></a>
                                     {{-- <i id="{{$notification['id']}}" title="Marcar como leído" class="icon-table eye"><i class="fa fa-eye"></i></i> --}}
-                                    <a href="{{route('notifications/delete', $notification['id'])}}" title="Eliminar" class="icon-table"><i class="fa fa-trash"></i></a>
+                                    <a href="{{route('notifications/delete', $notification['id'])}}" title="Delete" class="icon-table"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
                 @else
-                    <p>No hay notificaciones disponibles.</p>
+                    <p>There are no alerts available.</p>
                 @endif
             </div>
         </div>

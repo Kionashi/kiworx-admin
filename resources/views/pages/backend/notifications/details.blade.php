@@ -9,7 +9,7 @@
 		<div class="x_panel">
 			<div class="x_title">
                 <a href="{{route('notifications')}}"><h2>
-					Notificaciones <small>Detalles</small>
+					Alerts <small>Details</small>
 				</h2></a>
 				<div class="clearfix"></div>
 			</div>
@@ -18,14 +18,21 @@
                 <form action="#" class="form-horizontal form-label-left" method="post">
                     @csrf
                     <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Title <span class="required">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Title <span class="required"></span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <input type="text" id="name" name="name" disabled value="{{$notification['title']}}" class="form-control col-md-7 col-xs-12">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Contenido <span class="required">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Type <span class="required"></span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="name" name="name" disabled value="{{\App\Enums\NotificationType::getFriendlyName($notification['type'])}}" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Content <span class="required"></span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <textarea class="form-control col-md-7 col-xs-12" disabled>{{$notification['content']}}</textarea>
@@ -35,7 +42,7 @@
                     <div class="ln_solid"></div>
                         <div class="form-group">
                     <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                    <a href="{{route('notifications')}}" class="btn btn-primary">Volver</a>
+                    <a href="{{route('notifications')}}" class="btn btn-primary">Back</a>
                     </div>
                     </div>
                 </form>
