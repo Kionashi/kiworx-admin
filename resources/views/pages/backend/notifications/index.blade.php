@@ -28,7 +28,7 @@
                             @foreach($notifications as $notification)
                             <tr style="height:40px;" class="truncate-text @if($notification['status'] == 'ACTIVE')bold @endif">
                                 <td>{{ $notification['title'] }}</td>
-                                <td>{{{\App\Enums\NotificationType::getFriendlyName($notification['type'])}}</td>
+                                <td>{{\App\Enums\NotificationType::getFriendlyName($notification['type'])}}</td>
                                 <td>{{ $notification['content'] }} </td>
                                 <td>
                                     <a href="{{route('notifications/details', $notification['id'])}}" title="Details" class="icon-table"><i class="fa fa-search"></i></a>

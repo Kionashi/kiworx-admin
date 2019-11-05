@@ -38,6 +38,13 @@
                             <textarea class="form-control col-md-7 col-xs-12" disabled>{{$notification['content']}}</textarea>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Creation Date <span class="required"></span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="datetime" id="name" name="name" disabled    value="{{$notification['created_at']}}" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div>
             
                     <div class="ln_solid"></div>
                         <div class="form-group">
