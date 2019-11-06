@@ -47,10 +47,13 @@
                     </div>
             
                     <div class="ln_solid"></div>
-                        <div class="form-group">
-                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                    <a href="{{route('notifications')}}" class="btn btn-primary">Back</a>
-                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <a href="{{route('notifications')}}" class="btn btn-primary">Back</a>
+                            @if(isset($notification['url']))
+                                <a href="{{$notification['url']}}" class="btn btn-success">More</a>
+                            @endif
+                        </div>
                     </div>
                 </form>
             </div> 	

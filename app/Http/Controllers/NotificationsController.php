@@ -8,7 +8,7 @@ class NotificationsController extends Controller
 {
     public function index(){
         try{
-            // Get admin user list
+            // Get user's notifications
             $res = $this->client->get(env('API_BASE_URL').'admin/notifications/admin-user/'.session('admin.id'));
             
             // Parse response
@@ -26,18 +26,31 @@ class NotificationsController extends Controller
     }
     public function details($id){
         try{
-            //Deactivate notification
-            $res = $this->client->put(env('API_BASE_URL').'admin/notifications/'.$id.'/deactivate');
-            
-            // Get notification
-            $res = $this->client->get(env('API_BASE_URL').'admin/notifications/'.$id);
+            // Get user's notifications
+            $res = $this->client->get(env('API_BASE_URL').'admin/notifications/admin-user/'.session('admin.id'));
             
             // Parse response
-            $notification = json_decode($res->getBody(),true);
-            
-            // Return view
-            return view("pages.backend.notifications.details")
-                ->with('notification', $notification)
+            $notifications = json_decode($res->getBody(),true);
+            foreach($notifications as $notification){
+                // Check if the user owns the notification that is requesting
+                if($notification['id'] == $id){
+
+                    //Deactivate notification
+                    $res = $this->client->put(env('API_BASE_URL').'admin/notifications/'.$id.'/deactivate');
+                    
+                    // Get notification
+                    $res = $this->client->get(env('API_BASE_URL').'admin/notifications/'.$id);
+                    
+                    // Parse response
+                    $notification = json_decode($res->getBody(),true);
+                    
+                    // Return view
+                    return view("pages.backend.notifications.details")
+                        ->with('notification', $notification)
+                        ;
+                }
+            }
+            return redirect()->route('notifications')
             ;
         } catch(ClientException $e){
             return $this->handleError($e->getCode());
