@@ -18,41 +18,34 @@
 						<li><a href="{{route('logout')}}"><i class="fa fa-sign-out pull-right"></i>
 								Log Out</a></li>
 					</ul></li>
-
-				<li role="presentation" class="dropdown"><a href="javascript:;"
-					class="dropdown-toggle info-number" data-toggle="dropdown"
-					aria-expanded="false"> <i class="fa fa-envelope-o"></i> <span
-						class="badge bg-green">6</span>
-				</a>
-					<ul id="menu1" class="dropdown-menu list-unstyled msg_list"
-						role="menu">
-						<li><a> <span class="image"><img src="{{ asset('images/male-user.png') }}"
-									alt="Profile Image" /></span> <span> <span>John Smith</span>
-									<span class="time">3 mins ago</span>
-							</span> <span class="message"> Film festivals used to be
-									do-or-die moments for movie makers. They were where... </span>
-						</a></li>
-						<li><a> <span class="image"><img src="{{ asset('images/male-user.png') }}"
-									alt="Profile Image" /></span> <span> <span>John Smith</span>
-									<span class="time">3 mins ago</span>
-							</span> <span class="message"> Film festivals used to be
-									do-or-die moments for movie makers. They were where... </span>
-						</a></li>
-						<li><a> <span class="image"><img src="{{ asset('images/male-user.png') }}"
-									alt="Profile Image" /></span> <span> <span>John Smith</span>
-									<span class="time">3 mins ago</span>
-							</span> <span class="message"> Film festivals used to be
-									do-or-die moments for movie makers. They were where... </span>
-						</a></li>
-						<li><a> <span class="image"><img src="{{ asset('images/male-user.png') }}"
-									alt="Profile Image" /></span> <span> <span>John Smith</span>
-									<span class="time">3 mins ago</span>
-							</span> <span class="message"> Film festivals used to be
-									do-or-die moments for movie makers. They were where... </span>
-						</a></li>
+					<li role="presentation" class="dropdown"><a href="javascript:;"
+						class="dropdown-toggle info-number" data-toggle="dropdown"
+						aria-expanded="false"> <i class="fa fa-envelope-o"></i> @if(session('activeNotificationsCount') > 1) <span
+						class="badge bg-green">{{session('activeNotificationsCount')}}</span> @endif
+					</a>
+					<ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+						@foreach(session('notifications') as $count => $notification)
+							@if($count <= 6 )
+								<li>
+									<a href="{{route('notifications/details',$notification['id'])}}"> 
+										<span class="image notification-icon">
+											<img src="@if($notification['type'] == 'HIRING'){{asset('images/users-notification-light-borderless.png')}} @elseif($notification['type'] == 'CALENDAR'){{asset('images/calendar-notification-light-borderless.png')}} @elseif($notification['type'] == 'GENERAL'){{asset('images/bell-notification-light-borderless.png')}} @endif"alt="calendar-icon" class="img-fluid" />
+										</span> 
+										<span class="@if($notification['status'] == 'ACTIVE')bold @endif"> 
+											<span>{{$notification['title']}}</span>
+											@if(isset($notification['relativeTime']))
+												<span class="quantic-time">{{$notification['relativeTime']}}</span>
+											@endif
+										</span> 
+										<span class="message notification-body truncate-text">{{$notification['content']}} </span>
+									</a>
+								</li>
+								
+							@endif
+						@endforeach
 						<li>
 							<div class="text-center">
-								<a> <strong>See All Alerts</strong> <i
+							<a href="{{route('notifications')}}"> <strong>See All Alerts</strong> <i
 									class="fa fa-angle-right"></i>
 								</a>
 							</div>
@@ -62,3 +55,4 @@
 		</nav>
 	</div>
 </div>
+

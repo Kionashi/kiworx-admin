@@ -16,7 +16,7 @@ Route::post('/login', 'AuthController@storeSession')->name('login');
 Route::get('/password-recovery', 'AuthController@passwordRecovery')->name('password-recovery');
 Route::post('/password-recovery', 'AuthController@passwordEmail')->name('password-recovery');
 
-Route::group(['middleware' => ['admin.auth']], function () {
+Route::group(['middleware' => ['admin.auth','admin.notifications']], function () {
     
     // Home
     Route::get('/', 'HomeController@index')->name('home');
@@ -66,6 +66,12 @@ Route::group(['middleware' => ['admin.auth']], function () {
     Route::post('/offers/update', 'OffersController@update')->name('offers/update');
     Route::get('/offers/details/{id}', 'OffersController@details')->name('offers/details');
     Route::get('/offers/delete/{id}', 'OffersController@destroy')->name('offers/delete');
+
+    // Notifications
+    Route::get('/notifications', 'NotificationsController@index')->name('notifications');
+    Route::get('/notifications/{id}', 'NotificationsController@details')->name('notifications/details');
+    Route::get('/notifications/delete/{id}', 'NotificationsController@delete')->name('notifications/delete');
+    Route::get('/notifications/deactivate/{id}', 'NotificationsController@deactivate')->name('notifications/deactivate');
     
 });
 

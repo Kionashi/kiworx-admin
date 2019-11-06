@@ -108,7 +108,7 @@ class AuthController extends Controller
             // Login failed
 //             dd(json_decode($e->getResponse()->getBody()->getContents())->error);
             if ($e->getCode() == 401) return redirect()->route('login')->withErrors(json_decode($e->getResponse()->getBody()->getContents())->error);
-            
+             
             // External errors
             return $this->handleError($e->getCode());
         }
