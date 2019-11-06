@@ -7,13 +7,13 @@ use Illuminate\Support\Facades\App;
 abstract class NotificationType extends Enums
 {
     const GENERAL = 'GENERAL';
-    const RECRUIT = 'RECRUIT';
+    const HIRING = 'HIRING';
     const CALENDAR = 'CALENDAR';
 
     public static function values() {
         return array(
             'GENERAL'   => NotificationType::GENERAL, 
-            'RECRUIT'       => NotificationType::RECRUIT,
+            'HIRING'       => NotificationType::HIRING,
             'CALENDAR'       => NotificationType::CALENDAR
         );
     }
@@ -23,8 +23,8 @@ abstract class NotificationType extends Enums
         switch ($enum) {
             case NotificationType::GENERAL:
                 return 'General';
-            case NotificationType::RECRUIT:
-                return 'Recruit';
+            case NotificationType::HIRING:
+                return 'Hiring';
             case NotificationType::CALENDAR:
                 return 'Event';
         }
