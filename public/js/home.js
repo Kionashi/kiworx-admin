@@ -70,7 +70,7 @@ function initKPIChart(minDate, maxDate, chart_plot_02_data, chart_plot_02_datax)
 			width: 40,
 			height: 1
 		},
-		colors: ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
+		colors: ['#65EC91', '#6B42CE', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
 		shadowSize: 0,
 		tooltip: true,
 		tooltipOpts: {

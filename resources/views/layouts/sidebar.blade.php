@@ -1,6 +1,14 @@
 <div class="navbar nav_title" style="border: 0;">
-	<a href="{{route('home')}}" class="site_title"><i class="fa fa-paw"></i>
-		<span>{{env('APP_NAME')}}</span></a>
+	<a href="{{route('home')}}" class="site_title">
+		<div class="col-md-3">
+    		<img style="width: 100%;" src="{{asset('images/triangles.png')}}" />
+        </div>
+        <span>
+            <div class="col-md-8">
+        		<img style="width: 100%;" src="{{asset('images/logo-alt.png')}}" />
+            </div>
+        </span>
+	</a>
 </div>
 
 <div class="clearfix"></div>

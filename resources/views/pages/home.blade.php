@@ -26,32 +26,42 @@
 	</div>
 </div>
 <!-- top tiles -->
-<div class="row tile_count">
-	<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-		<span class="counTitlet_top"><i class="fa fa-eye"></i> Views</span>
-		<div id="viewsCount" class="count">{{$viewsCount}}</div>
-<!-- 		<span class="count_bottom"><i class="green">4% </i> From last Week</span> -->
-	</div>
-	<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-		<span class="count_top"><i class="fa fa-users"></i> Applicants</span>
-		<div id="applicantsCount" class="count">{{$applicantsCount}}</div>
-<!-- 		<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3%</i> From last Week</span> -->
-	</div>
-	<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-		<span class="count_top"><i class="fa fa-flask"></i> Kiwix</span>
-		<div id="kiwixCount" class="count green">{{$kiwixCount}}</div>
-<!-- 		<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34%</i> From last Week</span> -->
-	</div>
-	<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-		<span class="count_top"><i class="fa fa-user"></i> Hiring</span>
-		<div id="hiringCount" class="count">{{$hiringCount}}</div>
-<!-- 		<span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12%</i> From last Week</span> -->
-	</div>
-	<div class="col-md-4 col-sm-8 col-xs-12 tile_stats_count">
-		<span class="count_top"><i class="fa fa-clock-o"></i> Hiring time</span>
-		<div class="count">-</div>
-<!-- 		<span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34%</i> From last Week</span> -->
-	</div>
+<div class="row top_tiles">
+	<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="tile-stats">
+            <div class="icon"><i class="fa fa-eye gray-blue"></i></div>
+            <div id="viewsCount" class="count">{{$viewsCount}}</div>
+            <h3 class="gray-blue">Views</h3>
+        </div>
+    </div>
+	<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="tile-stats">
+            <div class="icon"><i class="fa fa-users gray-blue"></i></div>
+            <div id="applicantsCount" class="count">{{$applicantsCount}}</div>
+            <h3 class="gray-blue">Applicants</h3>
+        </div>
+    </div>
+	<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="tile-stats">
+            <div class="icon"><i class="fa fa-flask gray-blue"></i></div>
+            <div id="kiwixCount" class="count">{{$kiwixCount}}</div>
+            <h3 class="gray-blue">Kiwix</h3>
+        </div>
+    </div>
+	<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="tile-stats">
+            <div class="icon"><i class="fa fa-user gray-blue"></i></div>
+            <div id="hiringCount" class="count">{{$hiringCount}}</div>
+            <h3 class="gray-blue">Hiring</h3>
+        </div>
+    </div>
+<!--     <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12"> -->
+<!--         <div class="tile-stats"> -->
+<!--             <div class="icon"><i class="fa violet fa-clock-o"></i></div> -->
+<!--             <div id="hiringCount" class="count">-</div> -->
+<!--             <h3>Hiring time</h3> -->
+<!--         </div> -->
+<!--     </div> -->
 </div>
 
 <div class="row">

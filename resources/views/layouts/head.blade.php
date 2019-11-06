@@ -29,7 +29,7 @@
 <link href="{{asset('gentelella/vendors/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
 <!-- Custom Theme Style -->
-<link href="{{asset('gentelella/build/css/custom.min.css')}}" rel="stylesheet">
+<link href="{{asset('gentelella/build/css/custom.css')}}" rel="stylesheet">
 
 <!--Custom CSS -->
 <link href="{{asset('css/styles.css')}}" rel="stylesheet">
