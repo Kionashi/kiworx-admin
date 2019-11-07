@@ -44,11 +44,11 @@
 			@endif
 			
 			<li>
-				<a href="{{route('companies')}}"><i class="fa fa-desktop"></i> Startup</a>
+				<a href="{{route('companies')}}"><i class="fa fa-desktop"></i> Company</a>
 			</li>
 			
 			<li>
-				<a href="{{route('offers')}}"><i class="fa fa-table"></i> Ofertas</a>
+				<a href="{{route('offers')}}"><i class="fa fa-table"></i> Jobs</a>
 			</li>
 			
 			<li>

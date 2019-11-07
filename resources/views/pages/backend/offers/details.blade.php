@@ -1,4 +1,6 @@
-@extends('layouts.app') @section('content')
+@extends('layouts.app')
+@section('section', $offer['job_title'])
+@section('content')
 <!-- page content -->
 <div class="">
 	<div class="clearfix"></div>
@@ -8,7 +10,7 @@
 
 			<div class="x_title">
 				<h2>
-					<i class="fa fa-bars"></i> {{$offer['position']}}<small>Float left</small>
+					<i class="fa fa-bars"></i> {{$offer['job_title']}}
 				</h2>
 				<ul class="nav navbar-right panel_toolbox">
 					<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
@@ -20,9 +22,8 @@
 				</ul>
 				<div class="clearfix"></div>
 			</div>
+			
 			<div class="x_content">
-
-
 				<div class="" role="tabpanel" data-example-id="togglable-tabs">
 					<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
 						<li role="presentation" class="active"><a href="#tab_content1"
@@ -30,7 +31,7 @@
 						</li>
 						<li role="presentation" class=""><a href="#tab_content2"
 							role="tab" id="profile-tab" data-toggle="tab"
-							aria-expanded="false">Oferta</a></li>
+							aria-expanded="false">Job</a></li>
 					</ul>
 					<div id="myTabContent" class="tab-content">
 						<div role="tabpanel" class="tab-pane fade active in"
@@ -38,13 +39,15 @@
 							<!-- top tiles -->
 							<div class="row tile_count">
 								@foreach($offer['phases'] as $interview)
+    							<a href="{{ route('offers/details', ['id' => $offer['id'], 'order' => $interview['order']]) }}">
 								<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
 									<span class="count_top"><i class="fa fa-user"></i> {{$interview['name']}}</span>
-									<div class="count {{$interview['isFinal']?'green':''}}">{{$interview['applicant']}}</div>
+									<div class="count">{{count($interview['applyments'])}}</div>
 									<span class="count_bottom">
-										<a href="#" class="red">Rechazados {{$interview['rejected']}}</a>
+										<a href="#" class="red">Rejected {{$interview['rejected']}}</a>
 									</span>
 								</div>
+    							</a>
 								@endforeach
 							</div>
 							<!-- /top tiles -->
@@ -55,32 +58,32 @@
             					class="table table-striped table-bordered">
             					<thead>
             						<tr>
-            							<th>Nombre</th>
-            							<th>e-mail</th>
-            							<th>Estado</th>
-            							<th>Acciones</th>
+            							<th>Name</th>
+            							<th>Email</th>
+            							<th>Status</th>
+            							<th>Actions</th>
             						</tr>
             					</thead>
             					<tbody>
             						@foreach($applicants as $applicant)
             						<tr style="height: 40px;">
-            							<td><a href="#">{{ $applicant['name'] }} {{ $applicant['lastname'] }}</a></td>
-            							<td><a href="mailto:{{ $applicant['email'] }}">{{ $applicant['email'] }}</a></td>
+            							<td><a href="#">{{ $applicant['user']['name'] }} {{ $applicant['user']['lastname'] }}</a></td>
+            							<td><a href="mailto:{{ $applicant['user']['email'] }}">{{ $applicant['user']['email'] }}</a></td>
             							<td>
             								@if($applicant['status'] == 'PENDING')
-            									<button class="btn btn-warning btn-xs">Pendiente</button>
+            									<button class="btn btn-warning btn-xs">Pending</button>
             								@elseif($applicant['status'] == 'ACCEPTED')
-            									<button class="btn btn-success btn-xs">Aceptado</button>
+            									<button class="btn btn-success btn-xs">Accepted</button>
             								@else
-            									<button class="btn btn-danger btn-xs">Rechazado</button>
+            									<button class="btn btn-danger btn-xs">Rejected</button>
             								@endif
             							</td>
             							<td>
-            								<a href="#" title="Detalles" class="icon-table"><i class="fa fa-search"></i></a>
-            								<a href="#" title="Aceptar" class="icon-table green">
+            								<a href="#" title="Details" class="icon-table"><i class="fa fa-search"></i></a>
+            								<a href="{{ route('offers/details', ['id' => $offer['id'], 'order' => $interview['order']]) }}" title="Accept" class="icon-table green">
             									<i class="fa fas fa-check"></i>
         									</a>
-            								<a href="#" title="Rechazar" class="icon-table red">
+            								<a href="#" title="Reject" class="icon-table red">
             									<i class="fa fas fa-times"></i>
         									</a>
             							</td>
@@ -89,41 +92,39 @@
             					</tbody>
             				</table>
             				@else
-            				<p>No hay compañias disponibles.</p>
+            				<p>There are no applicants on this phase.</p>
             				@endif
 							<!-- /applicant list -->
 						</div>
 						<div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
 							<form action="" class="form-horizontal form-label-left" method="post">
 								<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12"
-							for="position">Título <span class="required">*</span>
-						</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="text" id="position" name="position"
-								required="required" class="form-control col-md-7 col-xs-12">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12"
-							for="experience">Experiencia <span class="required">*</span>
-						</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-							<select id="experience" name="experience" required="required"
-								class="form-control col-md-7 col-xs-12">
-								<option value="1">Prácticas</option>
-								<option value="2">1 a 3 años</option>
-								<option value="3">3 a 5 años</option>
-								<option value="3">más de 5 años</option>
-							</select>
-						</div>
-					</div>
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="position">Título <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input type="text" id="position" name="position"
+            								required="required" class="form-control col-md-7 col-xs-12">
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="experience">Experiencia <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<select id="experience" name="experience" required="required"
+            								class="form-control col-md-7 col-xs-12">
+            								<option value="1">Prácticas</option>
+            								<option value="2">1 a 3 años</option>
+            								<option value="3">3 a 5 años</option>
+            								<option value="3">más de 5 años</option>
+            							</select>
+            						</div>
+            					</div>
 							</form>
 						</div>
-						
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
