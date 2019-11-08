@@ -60,6 +60,7 @@
             						<tr>
             							<th>Name</th>
             							<th>Email</th>
+            							<th>Phone</th>
             							<th>Status</th>
             							<th>Actions</th>
             						</tr>
@@ -69,6 +70,7 @@
             						<tr style="height: 40px;">
             							<td><a href="#">{{ $applicant['user']['name'] }} {{ $applicant['user']['lastname'] }}</a></td>
             							<td><a href="mailto:{{ $applicant['user']['email'] }}">{{ $applicant['user']['email'] }}</a></td>
+            							<td><a href="mailto:{{ $applicant['user']['email'] }}">{{ $applicant['user']['phone'] }}</a></td>
             							<td>
             								@if($applicant['status'] == 'PENDING')
             									<button class="btn btn-warning btn-xs">Pending</button>
@@ -79,10 +81,13 @@
             								@endif
             							</td>
             							<td>
+            								<form id="promote" action="{{ route('offers/promote') }}" method="post">
+            									@csrf
+                                            </form>
             								<a href="#" title="Details" class="icon-table"><i class="fa fa-search"></i></a>
-            								<a href="{{ route('offers/details', ['id' => $offer['id'], 'order' => $interview['order']]) }}" title="Accept" class="icon-table green">
-            									<i class="fa fas fa-check"></i>
-        									</a>
+                								<a title="Accept" class="icon-table green">
+                                                    <i class="fa fas fa-check" onclick="$('#promote').submit();"></i>
+            									</a>
             								<a href="#" title="Reject" class="icon-table red">
             									<i class="fa fas fa-times"></i>
         									</a>

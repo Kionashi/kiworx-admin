@@ -316,4 +316,24 @@ class OffersController extends Controller
             return $this->handleError($e->getCode());
         }
     }
+    
+    public function promote(Request $request){
+        try {
+//             // Build request
+//             $body = $request->all();
+            
+//             // Store offer
+//             $this->client->post(env('API_BASE_URL').'admin/offers',[
+//                 'body'=> json_encode($body)
+//             ]);
+            
+            // Redirect to offers
+            return redirect()->route('offers');
+        } catch(RequestException $e){
+            dd($e->getCode());
+            return $this->handleError($e->getCode());
+        }
+        
+    }
+    
 }
