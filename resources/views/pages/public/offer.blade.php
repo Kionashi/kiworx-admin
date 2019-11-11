@@ -77,7 +77,7 @@
                     <hr>
 
                     <div class="job-detail-desc">
-                        <p class="text-muted f-14 mb-3">{{$offer['job_brief']}}</p>
+                        <p class="text-muted">{{$offer['job_brief']}}</p>
                     </div>
                 </div>
 
@@ -90,8 +90,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="job-detail mt-2 p-4">
-                            <div class="job-detail-desc">
-                                <p class="text-muted f-14 mb-3">{{$offer['description']}}</p>
+                            <div class="job-detail-desc text-muted">
+                                {!! $offer['description'] !!}
                             </div>
                         </div>
                     </div>
@@ -106,8 +106,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="job-detail mt-2 p-4">
-                            <div class="job-detail-desc">
-                            	<p class="text-muted f-14 mb-3">{{$offer['responsibilities']}}</p>
+                            <div class="job-detail-desc text-muted">
+                            	{!! $offer['responsibilities'] !!}
                             </div>
                         </div>
                     </div>

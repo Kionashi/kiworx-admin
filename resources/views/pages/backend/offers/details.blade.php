@@ -170,7 +170,7 @@
             							for="jobBrief">Job brief <span class="required">*</span>
             						</label>
             						<div class="col-md-6 col-sm-6 col-xs-12">
-            							<textarea id="jobBrief" name="jobBrief" value="{{$offer['job_brief']}}" disabled class="form-control col-md-7 col-xs-12"></textarea>
+            							<textarea id="jobBrief" name="jobBrief" disabled class="form-control col-md-7 col-xs-12">{{$offer['job_brief']}}</textarea>
             						</div>
             					</div>
             					<div class="form-group">
@@ -202,7 +202,7 @@
             							for="description">Description <span class="required">*</span>
             						</label>
             						<div class="col-md-6 col-sm-6 col-xs-12">
-            							{{$offer['description']}}
+            							{!!$offer['description']!!}
             						</div>
             					</div>
             					<div class="form-group">
@@ -211,7 +211,7 @@
             						</label>
             						<div class="col-md-6 col-sm-6 col-xs-12">
             							<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
-            								{{$offer['responsibilities']}}
+            								{!!$offer['responsibilities']!!}
             							</div>
             						</div>
             					</div>
@@ -219,7 +219,7 @@
             						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="requirements">Requisitos <span class="required">*</span>
             						</label>
             						<div class="col-md-6 col-sm-6 col-xs-12">
-            							{{$offer['requirements']}}
+            							{!!$offer['requirements']!!}
             						</div>
             					</div>
             					<div class="form-group">
@@ -227,7 +227,7 @@
             							for="contractType">Contract type  <span class="required">*</span>
             						</label>
             						<div class="col-md-6 col-sm-6 col-xs-12">
-            							<input id="salaryMax" name="salaryMax" value="{{$offer['contract_type']}}" disabled class="form-control col-md-7 col-xs-12" />
+            							<input id="salaryMax" name="salaryMax" value="{{\App\Enums\OfferContractType::getFriendlyName($offer['contract_type'])}}" disabled class="form-control col-md-7 col-xs-12" />
             						</div>
             					</div>
             					
@@ -309,6 +309,10 @@
 <link
 	href="{{asset('gentelella/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css')}}"
 	rel="stylesheet">
+<link
+	href="{{asset('css/bootstrap-wysihtml5-0.0.2.css')}}"
+	rel="stylesheet">
+	
 @endsection
 @section('extended-scripts')
 <!-- Datatables -->
@@ -341,9 +345,4 @@
 	src="{{ asset('gentelella/vendors/pdfmake/build/pdfmake.min.js') }}"></script>
 <script
 	src="{{ asset('gentelella/vendors/pdfmake/build/vfs_fonts.js') }}"></script>
-	
-<script src="{{ asset('gentelella/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js') }}"></script>
-<script src="{{ asset('gentelella/vendors/jquery.hotkeys/jquery.hotkeys.js') }}"></script>
-<script src="{{ asset('gentelella/vendors/google-code-prettify/src/prettify.js') }}"></script>
-<script src="{{ asset('gentelella/vendors/jquery.tagsinput/src/jquery.tagsinput.js') }}"></script>
 @endsection

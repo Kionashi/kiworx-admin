@@ -20,6 +20,7 @@
 				<table id="datatable-buttons" class="table table-striped table-bordered">
 					<thead>
 						<tr>
+							<th>Public URL</th>
 							<th>Position</th>
 							<th>Category</th>
 							<th>Company</th>
@@ -30,6 +31,7 @@
 					<tbody>
 						@foreach($offers as $offer)
 						<tr style="height: 40px;">
+							<td><a href="{{route('offer/public', ['company' => $offer['company']['friendly_name'], 'code' => $offer['code']])}}" target="_blank">View offer</a></td>
 							<td><a href="{{route('offers/details', ['id' => $offer['id'], 'order' => 1])}}">{{ $offer['job_title'] }}</a></td>
 							<td>{{\App\Enums\OfferCategory::getFriendlyName($offer['category'])}}</td>
 							<td>{{ $offer['company']['name'] }}</td>

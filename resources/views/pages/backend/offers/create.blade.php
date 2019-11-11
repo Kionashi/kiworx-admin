@@ -28,7 +28,7 @@
 			</div>
 			@endif
 			<div class="x_content">
-				<form action="{{route('offers/store')}}"
+				<form id="createOfferForm" action="{{route('offers/store')}}"
 					class="form-horizontal form-label-left" method="post">
 					@csrf
 					<div class="form-group">
@@ -88,8 +88,7 @@
 							for="description">Description <span class="required">*</span>
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-						<textarea name="description" id="description"></textarea>
-							<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
+							<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#description-container">
 								<div class="btn-group">
 									<a class="btn dropdown-toggle" data-toggle="dropdown"
 										title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
@@ -163,8 +162,9 @@
 								</div>
 							</div>
 							
-							<div id="editor-one" class="editor-wrapper"></div>
+							<div id="description-container" class="editor-wrapper"></div>
 							
+							<textarea name="description" id="description" style="display: none;"></textarea>
 						</div>
 					</div>
 					<div class="form-group">
@@ -172,7 +172,7 @@
 							for="responsabilities">Responsabilities <span class="required">*</span>
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
+							<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#responsabilities-container">
 								<div class="btn-group">
 									<a class="btn dropdown-toggle" data-toggle="dropdown"
 										title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
@@ -246,27 +246,28 @@
 								</div>
 							</div>
 							
-							<div id="editor-one" name="respo" class="editor-wrapper"></div>
+							<div id="responsabilities-container" class="editor-wrapper"></div>
 							
-							<textarea name="responsibilities" id="responsibilities" style="display: none;"></textarea>
+							<textarea name="responsibilities" id="responsibilities" style="display:none;"></textarea>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="requirements">Requisitos <span class="required">*</span>
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
+							<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#requirements-container">
 								<div class="btn-group">
 									<a class="btn dropdown-toggle" data-toggle="dropdown"
 										title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
 									<ul class="dropdown-menu">
 									</ul>
 								</div>
-
+								
 								<div class="btn-group">
 									<a class="btn dropdown-toggle" data-toggle="dropdown"
 										title="Font Size"><i class="fa fa-text-height"></i>&nbsp;<b
-										class="caret"></b></a>
+										class="caret"></b>
+									</a>
 									<ul class="dropdown-menu">
 										<li><a data-edit="fontSize 5">
 												<p style="font-size: 17px">Huge</p>
@@ -327,9 +328,9 @@
 										title="Redo (Ctrl/Cmd+Y)"><i class="fa fa-repeat"></i></a>
 								</div>
 							</div>
-
-							<div id="editor-one" class="editor-wrapper"></div>
-
+							
+							<div id="requirements-container" class="editor-wrapper"></div>
+							
 							<textarea name="requirements" id="requirements" style="display: none;"></textarea>
 						</div>
 					</div>
@@ -437,10 +438,41 @@
 	</div>
 </div>
 @endsection @section('extended-css') @endsection
+
 @section('extended-scripts')
-<!-- bootstrap-wysiwyg -->
+<!-- Bootstrap-wysiwyg -->
 <script src="{{ asset('gentelella/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js') }}"></script>
 <script src="{{ asset('gentelella/vendors/jquery.hotkeys/jquery.hotkeys.js') }}"></script>
 <script src="{{ asset('gentelella/vendors/google-code-prettify/src/prettify.js') }}"></script>
+
+<!-- jQuery Tags Input -->
 <script src="{{ asset('gentelella/vendors/jquery.tagsinput/src/jquery.tagsinput.js') }}"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#createOfferForm').submit(function(){
+		var descriptionContent = $('#description-container').html();
+		var responsabilitiesContent = $('#responsabilities-container').html();
+		var requirementsContent = $('#requirements-container').html();
+		
+		$('#description').val(descriptionContent);
+		$('#responsibilities').val(responsabilitiesContent);
+		$('#requirements').val(requirementsContent);
+		
+	});
+	
+	$('.editor-wrapper').each(function(){
+		var id = $(this).attr('id');	//editor-one
+		console.log('==>'+id);
+		$(this).wysiwyg({
+			toolbarSelector: '[data-target="#' + id + '"]',
+		});	
+	});
+
+	$('#tags_1').tagsInput({
+	  width: 'auto'
+	});
+	
+});
+</script>
 @endsection

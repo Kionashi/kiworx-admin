@@ -10,7 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/login', 'AuthController@login')->name('login');
 Route::post('/login', 'AuthController@storeSession')->name('login');
 Route::get('/password-recovery', 'AuthController@passwordRecovery')->name('password-recovery');
@@ -84,6 +83,6 @@ Route::get('/{company}/jobs/{code}', 'OffersController@publicDetail')->name('off
 Route::post('/{company}/jobs/{code}', 'OffersController@storeApplyment')->name('offer/apply');
 
 //Test
-Route::get('/test', 'TestsController@test')->name('test');
+Route::get('/test', 'TestsController@index')->name('test');
 Route::post('/test-post', 'TestsController@testPost')->name('test-post');
 
