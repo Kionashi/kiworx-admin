@@ -81,89 +81,51 @@ class OffersController extends Controller
                 
             }
             
-//             $offer = array(
-//                 'id'                => 1,
-//                 'position'          => 'Programador Senior Android/Java',
-//                 'category'          => 'IT',
-//                 'phases'        => array(
-//                     [
-//                         'name'      => 'Aplicantes',
-//                         'applicant'  => '200',
-//                         'rejected'  => '0',
-//                         'isFinal'   => false
-//                     ],
-//                     [
-//                         'name'      => 'Elenius',
-//                         'applicant'  => '200',
-//                         'rejected'  => '190',
-//                         'isFinal'   => false
-//                     ],
-//                     [
-//                         'name'      => 'Entrevista #1',
-//                         'applicant'  => '10',
-//                         'rejected'  => '5',
-//                         'isFinal'   => false
-//                     ],
-//                     [
-//                         'name'      => 'Entrevista #2',
-//                         'applicant'  => '5',
-//                         'rejected'  => '1',
-//                         'isFinal'   => false
-//                     ],
-//                     [
-//                         'name'      => 'Propuesta',
-//                         'applicant'  => '4',
-//                         'rejected'  => '3',
-//                         'isFinal'   => false
-//                     ],
-//                     [
-//                         'name'      => 'Contratado',
-//                         'applicant'  => '1',
-//                         'rejected'  => '1',
-//                         'isFinal'   => true
-//                     ]
-                    
-//                 ),
-//                 'active'            => false,
-//                 'company'           => array(
-// '                   name'  => 'Cabify España'
-//                 )
-//             );
-            
-//             $applicants = array(
-//                 [
-//                     'name'          => 'Víctor',
-//                     'lastname'      => 'Cardozo',
-//                     'email'         => 'vcardozo@kiworx.net',
-//                     'status'        => 'PENDING'
-//                 ],
-//                 [
-//                     'name'          => 'Santiago',
-//                     'lastname'      => 'Romero',
-//                     'email'         => 'romero@kiworx.net',
-//                     'status'        => 'ACCEPTED'
-//                 ],
-//                 [
-//                     'name'          => 'Javier',
-//                     'lastname'      => 'Cañizares',
-//                     'email'         => 'jcanizares@kiworx.net',
-//                     'status'        => 'REJECTED'
-//                 ],
-//                 [
-//                     'name'          => 'Víctor',
-//                     'lastname'      => 'Cardozo',
-//                     'email'         => 'vcardozo@kiworx.net',
-//                     'status'        => 'PENDING'
-//                 ],
-//             );
-            
+//             dd($offer);
 //             dd($offer, $applicants);
             return view("pages.backend.offers.details")
                 ->with('offer', $offer)
                 ->with('applicants', $applicants)
+                ->with('currentPhase', $phase)
             ;
         } catch(RequestException $e){
             dd($e->getCode());
+            return $this->handleError($e->getCode());
+        }
+    }
+    
+    public function reject(Request $request){
+        try {
+            // Build request
+            $body = $request->all();
+            dd($body);
+            // Store offer
+            $res = $this->client->post(env('API_BASE_URL').'admin/offers/reject', [
+                'body'=> json_encode($body)
+            ]);
+            dd(json_decode($res->getBody(),true));
+            // Redirect to offers
+            return redirect()->route('offers/details', ['id' => $request->offerId, 'phase' => $request->phase]);
+        } catch(RequestException $e){
+            dd($e);
+            return $this->handleError($e->getCode());
+        }
+    }
+    
+    public function promote(Request $request){
+        try {
+            // Build request
+            $body = $request->all();
+
+            // Store offer
+            $this->client->post(env('API_BASE_URL').'admin/offers/promote', [
+                'body'=> json_encode($body)
+            ]);
+            
+            // Redirect to offers
+            return redirect()->route('offers/details', ['id' => $request->offerId, 'phase' => $request->phase]);
+        } catch(RequestException $e){
+            dd($e);
             return $this->handleError($e->getCode());
         }
     }
@@ -181,7 +143,7 @@ class OffersController extends Controller
                 ->with('offer', $offer)
             ;
         } catch(RequestException $e){
-            dd($e->getCode());
+            dd($e);
             return $this->handleError($e->getCode());
         }
     }
@@ -315,25 +277,6 @@ class OffersController extends Controller
             // Handle error
             return $this->handleError($e->getCode());
         }
-    }
-    
-    public function promote(Request $request){
-        try {
-//             // Build request
-//             $body = $request->all();
-            
-//             // Store offer
-//             $this->client->post(env('API_BASE_URL').'admin/offers',[
-//                 'body'=> json_encode($body)
-//             ]);
-            
-            // Redirect to offers
-            return redirect()->route('offers');
-        } catch(RequestException $e){
-            dd($e->getCode());
-            return $this->handleError($e->getCode());
-        }
-        
     }
     
 }

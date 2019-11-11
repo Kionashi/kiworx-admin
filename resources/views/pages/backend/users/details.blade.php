@@ -9,11 +9,8 @@
 		<div class="x_panel">
 			<div class="x_title">
                 <a href="{{route('users')}}"><h2>
-					Candidato <small>Detalles</small>
+					Candidate <small>Details</small>
 				</h2></a>
-				<!-- <ul class="nav navbar-right panel_toolbox">
-					<li><a href="{{route('admin-users/create')}}">nuevo registro <i class="fa fa-plus"></i></a></li>
-				</ul> -->
 				<div class="clearfix"></div>
 			</div>
             @if($errors->any())
@@ -58,6 +55,7 @@
                             <input type="text" id="text" name="text" disabled value="{{$user['phone']}}" class="form-control col-md-7 col-xs-12">
                         </div>
                     </div>
+                    @if(session('admin.isSuperAdmin'))
                     <div class="form-group">
                     	<label class="control-label col-md-3 col-sm-3 col-xs-12" for="enabled">Enabled 
                         </label>
@@ -76,11 +74,15 @@
                             </label>
                         </div>
                     </div>
-                    
+                    @endif
                     <div class="ln_solid"></div>
                     <div class="form-group">
                         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                            <a href="{{route('users')}}" class="btn btn-primary">Volver</a>
+                        	@if(session('admin.isSuperAdmin'))
+                                <a href="{{route('users')}}" class="btn btn-primary">Back</a>
+                            @else
+                            	<a href="javascript:history.back()" class="btn btn-primary">Back</a>
+                            @endif
                         </div>
                     </div>
                 </form>

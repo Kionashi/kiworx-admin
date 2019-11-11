@@ -48,6 +48,7 @@ Route::group(['middleware' => ['admin.auth','admin.notifications']], function ()
     Route::get('/users/details/{id}', 'UsersController@details')->name('users/details');
     Route::get('/users/delete/{id}', 'UsersController@destroy')->name('users/delete');
     Route::get('/candidates', 'UsersController@candidatesDatabase')->name('candidates');
+//     Route::get('/candidate/details/{id}', 'UsersController@candidatesDetails')->name('candidates/details');
     
     // Companies
     Route::get('/companies', 'CompaniesController@index')->name('companies');
@@ -67,6 +68,7 @@ Route::group(['middleware' => ['admin.auth','admin.notifications']], function ()
     Route::get('/offers/details/{id}/{phase}', 'OffersController@details')->name('offers/details');
     Route::get('/offers/delete/{id}', 'OffersController@destroy')->name('offers/delete');
     Route::post('/offers/promote', 'OffersController@promote')->name('offers/promote');
+    Route::post('/offers/reject', 'OffersController@reject')->name('offers/reject');
     
     // Notifications
     Route::get('/notifications', 'NotificationsController@index')->name('notifications');

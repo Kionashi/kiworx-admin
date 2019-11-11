@@ -39,7 +39,7 @@
 							<!-- top tiles -->
 							<div class="row tile_count">
 								@foreach($offer['phases'] as $interview)
-    							<a href="{{ route('offers/details', ['id' => $offer['id'], 'order' => $interview['order']]) }}">
+								<a href="{{ route('offers/details', ['id' => $offer['id'], 'order' => $interview['order']]) }}">
 								<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
 									<span class="count_top"><i class="fa fa-user"></i> {{$interview['name']}}</span>
 									<div class="count">{{count($interview['applyments'])}}</div>
@@ -47,86 +47,244 @@
 										<a href="#" class="red">Rejected {{$interview['rejected']}}</a>
 									</span>
 								</div>
-    							</a>
+								</a>
 								@endforeach
 							</div>
 							<!-- /top tiles -->
 							
 							<!-- applicant list -->
 							@if (isset($applicants))
-            				<table id="datatable-buttons"
-            					class="table table-striped table-bordered">
-            					<thead>
-            						<tr>
-            							<th>Name</th>
-            							<th>Email</th>
-            							<th>Phone</th>
-            							<th>Status</th>
-            							<th>Actions</th>
-            						</tr>
-            					</thead>
-            					<tbody>
-            						@foreach($applicants as $applicant)
-            						<tr style="height: 40px;">
-            							<td><a href="#">{{ $applicant['user']['name'] }} {{ $applicant['user']['lastname'] }}</a></td>
-            							<td><a href="mailto:{{ $applicant['user']['email'] }}">{{ $applicant['user']['email'] }}</a></td>
-            							<td><a href="mailto:{{ $applicant['user']['email'] }}">{{ $applicant['user']['phone'] }}</a></td>
-            							<td>
-            								@if($applicant['status'] == 'PENDING')
-            									<button class="btn btn-warning btn-xs">Pending</button>
-            								@elseif($applicant['status'] == 'ACCEPTED')
-            									<button class="btn btn-success btn-xs">Accepted</button>
-            								@else
-            									<button class="btn btn-danger btn-xs">Rejected</button>
-            								@endif
-            							</td>
-            							<td>
-            								<form id="promote" action="{{ route('offers/promote') }}" method="post">
-            									@csrf
-                                            </form>
-            								<a href="#" title="Details" class="icon-table"><i class="fa fa-search"></i></a>
-                								<a title="Accept" class="icon-table green">
-                                                    <i class="fa fas fa-check" onclick="$('#promote').submit();"></i>
-            									</a>
-            								<a href="#" title="Reject" class="icon-table red">
-            									<i class="fa fas fa-times"></i>
-        									</a>
-            							</td>
-            						</tr>
-            						@endforeach
-            					</tbody>
-            				</table>
-            				@else
-            				<p>There are no applicants on this phase.</p>
-            				@endif
+							<table id="datatable-buttons"
+								class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Email</th>
+										<th>Phone</th>
+										<th>Status</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($applicants as $i => $applicant)
+									<tr style="height: 40px;">
+										<td><a href="{{route('users/details', $applicant['user']['id'])}}">{{ $applicant['user']['name'] }} {{ $applicant['user']['lastname'] }}</a></td>
+										<td><a href="mailto:{{ $applicant['user']['email'] }}">{{ $applicant['user']['email'] }}</a></td>
+										<td><a href="tel:{{ $applicant['user']['phone'] }}">{{ $applicant['user']['phone'] }}</a></td>
+										<td>
+											@if($applicant['status'] == 'PENDING')
+												<button class="btn btn-warning btn-xs">Pending</button>
+											@elseif($applicant['status'] == 'ACCEPTED')
+												<button class="btn btn-success btn-xs">Accepted</button>
+											@else
+												<button class="btn btn-danger btn-xs">Rejected</button>
+											@endif
+										</td>
+										<td>
+											<form id="promoteForm-{{$i}}" action="{{ route('offers/promote') }}" method="post">
+												@csrf
+												<input type="hidden" name="applicantId" value="{{ $applicant['id'] }}">
+												<input type="hidden" name="phase" value="{{ $currentPhase }}">
+												<input type="hidden" name="offerId" value="{{ $offer['id'] }}">
+												
+											</form>
+											<form id="rejectForm-{{$i}}" action="{{ route('offers/reject') }}" method="post">
+												@csrf
+												<input type="hidden" name="applicantId" value="{{ $applicant['id'] }}">
+												<input type="hidden" name="phase" value="{{ $currentPhase }}">
+												<input type="hidden" name="offerId" value="{{ $offer['id'] }}">
+											</form>
+											<a href="#" title="Details" class="icon-table"><i class="fa fa-search"></i></a>
+											@if($applicant['status'] != 'ACCEPTED')
+    											<span title="Accept" class="icon-table green" data-toggle="modal" data-target=".bs-accept-{{$i}}-modal-sm">
+    												<i class="fa fas fa-check"></i>
+    											</span>
+											@endif
+											@if($applicant['status'] == 'PENDING')
+    											<span title="Reject" class="icon-table red" data-toggle="modal" data-target=".bs-reject-{{$i}}-modal-sm">
+    												<i class="fa fas fa-times"></i>
+    											</span>
+											@endif
+											<!-- CONFIRMATION ACCEPT MODAL -->
+											<div class="modal fade bs-accept-{{$i}}-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+												<div class="modal-dialog modal-sm">
+													<div class="modal-content">
+														<div class="modal-body">
+															<h4>Text in a modal</h4>
+															<p>Are you sure you want yo promote this candidate to the next stage?</p>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+															<button type="button" class="btn btn-primary" onclick="$('#promoteForm-{{$i}}').submit();">Yes</button>
+														</div>
+													</div>
+												</div>
+											</div>
+											
+											<!-- CONFIRMATION REJECT MODAL -->
+											<div class="modal fade bs-reject-{{$i}}-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+												<div class="modal-dialog modal-sm">
+													<div class="modal-content">
+														<div class="modal-body">
+															<h4>Text in a modal</h4>
+															<p>Are you sure you want yo promote this candidate to the next stage?</p>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+															<button type="button" class="btn btn-primary" onclick="$('#rejectForm-{{$i}}').submit();">Yes</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</td>
+									</tr>
+									@endforeach
+								</tbody>
+							</table>
+							@else
+							<p>There are no applicants on this phase.</p>
+							@endif
 							<!-- /applicant list -->
 						</div>
+						<!-- OFFER DETAILS -->
 						<div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-							<form action="" class="form-horizontal form-label-left" method="post">
-								<div class="form-group">
-            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
-            							for="position">Título <span class="required">*</span>
-            						</label>
+							<form action="{{route('offers/store')}}"
+            					class="form-horizontal form-label-left" method="post">
+            					@csrf
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="jobTitle">Position <span class="required">*</span></label>
             						<div class="col-md-6 col-sm-6 col-xs-12">
-            							<input type="text" id="position" name="position"
-            								required="required" class="form-control col-md-7 col-xs-12">
+            							<input type="text" id="jobTitle" name="jobTitle" value="{{$offer['job_title']}}" disabled class="form-control col-md-7 col-xs-12">
             						</div>
             					</div>
             					<div class="form-group">
             						<label class="control-label col-md-3 col-sm-3 col-xs-12"
-            							for="experience">Experiencia <span class="required">*</span>
+            							for="experience">Experience <span class="required">*</span>
             						</label>
             						<div class="col-md-6 col-sm-6 col-xs-12">
-            							<select id="experience" name="experience" required="required"
-            								class="form-control col-md-7 col-xs-12">
-            								<option value="1">Prácticas</option>
-            								<option value="2">1 a 3 años</option>
-            								<option value="3">3 a 5 años</option>
-            								<option value="3">más de 5 años</option>
-            							</select>
+            							<input type="text" id="experience" name="experience" value="{{ \App\Enums\OfferExperience::getFriendlyName($offer['experience']) }}" disabled class="form-control col-md-7 col-xs-12">
             						</div>
             					</div>
-							</form>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="jobBrief">Job brief <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<textarea id="jobBrief" name="jobBrief" value="{{$offer['job_brief']}}" disabled class="form-control col-md-7 col-xs-12"></textarea>
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="salary">Salary text
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input type="text" id="salary" name="salary" disabled value="{{$offer['salary']}}" class="form-control col-md-7 col-xs-12" />
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="salaryMin">Salary min
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input type="number" id="salaryMin" name="salaryMin" disabled value="{{$offer['salary_min']}}" class="form-control col-md-7 col-xs-12" />
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="salaryMax">Salary max
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input type="number" id="salaryMax" name="salaryMax" disabled value="{{$offer['salary_max']}}" class="form-control col-md-7 col-xs-12" />
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="description">Description <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							{{$offer['description']}}
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="responsabilities">Responsabilities <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
+            								{{$offer['responsibilities']}}
+            							</div>
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="requirements">Requisitos <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							{{$offer['requirements']}}
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="contractType">Contract type  <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input id="salaryMax" name="salaryMax" value="{{$offer['contract_type']}}" disabled class="form-control col-md-7 col-xs-12" />
+            						</div>
+            					</div>
+            					
+            					<div class="form-group">
+            						
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="workingTime">Working days  <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input type="text" id="experience" name="experience" value="{{ \App\Enums\OfferWorkingDays::getFriendlyName($offer['working_days']) }}" disabled class="form-control col-md-7 col-xs-12">
+            						</div>
+            					</div>
+            					
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="category">Category <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input type="text" id="experience" name="experience" value="{{ \App\Enums\OfferCategory::getFriendlyName($offer['category']) }}" disabled class="form-control col-md-7 col-xs-12">
+            						</div>
+            					</div>
+            					
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="workingLanguage">Working language <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input type="text" id="workingLanguage" name="workingLanguage" value="{{ \App\Enums\OfferWorkingLanguages::getFriendlyName($offer['working_language']) }}" disabled class="form-control col-md-7 col-xs-12">
+            						</div>
+            					</div>
+            					
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12"
+            							for="companyId">Company <span class="required">*</span>
+            						</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input class="form-control col-md-7 col-xs-12" value="{{ $offer['company']['name'] }}" disabled />
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="location">Location</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<input type="text" id="location" name="location" value="{{ $offer['location'] }}" class="form-control col-md-7 col-xs-12">
+            						</div>
+            					</div>
+            					<div class="form-group">
+            						<label class="control-label col-md-3 col-sm-3 col-xs-12">Hashtag</label>
+            						<div class="col-md-6 col-sm-6 col-xs-12">
+            							<p>
+            								@foreach ($offer['hashtags'] as $hashtag)
+        										{{$hashtag['name']}}
+    										@endforeach
+										</p>
+            						</div>
+            					</div>
+            					<div class="ln_solid"></div>
+            				</form>
 						</div>
 					</div>
 				</div>
@@ -183,4 +341,9 @@
 	src="{{ asset('gentelella/vendors/pdfmake/build/pdfmake.min.js') }}"></script>
 <script
 	src="{{ asset('gentelella/vendors/pdfmake/build/vfs_fonts.js') }}"></script>
+	
+<script src="{{ asset('gentelella/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/jquery.hotkeys/jquery.hotkeys.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/google-code-prettify/src/prettify.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/jquery.tagsinput/src/jquery.tagsinput.js') }}"></script>
 @endsection
