@@ -134,7 +134,12 @@ class OffersController extends Controller
         try{
             $res = $this->client->request('GET', env('API_BASE_URL').'admin/offers/'.$id);
             $offer = json_decode($res->getBody(),true);
-            
+            $hashStr = '';
+            foreach ($offer['hashtags'] as $i => $hashtag) {
+                $hashStr = $i != 0 ? $hashStr.',': $hashtag['name'];
+                $hashStr .= $hashtag['name'];
+            }
+            $offer['hashStr'] = $hashStr;
             $res = $this->client->request('GET', env('API_BASE_URL').'admin/companies');
             $companies = json_decode($res->getBody(),true);
             // dd($offer);

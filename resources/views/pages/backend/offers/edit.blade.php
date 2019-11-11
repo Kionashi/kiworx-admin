@@ -10,7 +10,7 @@
 			<div class="x_title">
 				<a href="{{route('offers')}}">
 					<h2>
-						Jobs <small>Create</small>
+						Jobs <small>Edit</small>
 					</h2></a>
 				<div class="clearfix"></div>
 			</div>
@@ -36,7 +36,7 @@
 							for="jobTitle">Position <span class="required">*</span>
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="text" id="jobTitle" name="jobTitle" required class="form-control col-md-7 col-xs-12">
+							<input type="text" id="jobTitle" name="jobTitle" value="{{$offer['job_title']}}" required class="form-control col-md-7 col-xs-12">
 						</div>
 					</div>
 					<div class="form-group">
@@ -56,7 +56,7 @@
 							for="jobBrief">Job brief <span class="required">*</span>
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<textarea id="jobBrief" name="jobBrief" required="required" class="form-control col-md-7 col-xs-12"></textarea>
+							<textarea id="jobBrief" name="jobBrief" required="required" class="form-control col-md-7 col-xs-12">{{$offer['job_brief']}}</textarea>
 						</div>
 					</div>
 					<div class="form-group">
@@ -64,7 +64,7 @@
 							for="salary">Salary text
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="text" id="salary" name="salary" required class="form-control col-md-7 col-xs-12">
+							<input type="text" id="salary" name="salary" required value="{{$offer['salary']}}" class="form-control col-md-7 col-xs-12">
 						</div>
 					</div>
 					<div class="form-group">
@@ -72,7 +72,7 @@
 							for="salaryMin">Salary min
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="number" id="salaryMin" name="salaryMin" class="form-control col-md-7 col-xs-12">
+							<input type="number" id="salaryMin" name="salaryMin" value="{{$offer['salary_min']}}" class="form-control col-md-7 col-xs-12">
 						</div>
 					</div>
 					<div class="form-group">
@@ -80,7 +80,7 @@
 							for="salaryMax">Salary max
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="number" id="salaryMax" name="salaryMax" class="form-control col-md-7 col-xs-12">
+							<input type="number" id="salaryMax" name="salaryMax" value="{{$offer['salary_max']}}" class="form-control col-md-7 col-xs-12">
 						</div>
 					</div>
 					<div class="form-group">
@@ -162,7 +162,9 @@
 								</div>
 							</div>
 							
-							<div id="description-container" class="editor-wrapper"></div>
+							<div id="description-container" class="editor-wrapper">
+								{!! $offer['description'] !!}
+							</div>
 							
 							<textarea name="description" id="description" style="display: none;"></textarea>
 						</div>
@@ -246,7 +248,9 @@
 								</div>
 							</div>
 							
-							<div id="responsabilities-container" class="editor-wrapper"></div>
+							<div id="responsabilities-container" class="editor-wrapper">
+								{!! $offer['responsibilities'] !!}
+							</div>
 							
 							<textarea name="responsibilities" id="responsibilities" style="display:none;"></textarea>
 						</div>
@@ -329,7 +333,9 @@
 								</div>
 							</div>
 							
-							<div id="requirements-container" class="editor-wrapper"></div>
+							<div id="requirements-container" class="editor-wrapper">
+								{!! $offer['requirements'] !!}
+							</div>
 							
 							<textarea name="requirements" id="requirements" style="display: none;"></textarea>
 						</div>
@@ -408,20 +414,14 @@
 							for="location">Location
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="text" id="location" name="location" required class="form-control col-md-7 col-xs-12">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="salaryMin">Interview phases</label>
-						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="number" id="phases" name="phases" class="form-control col-md-7 col-xs-12">
+							<input type="text" id="location" name="location" required value="{{$offer['location']}}" class="form-control col-md-7 col-xs-12">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-md-3 col-sm-3 col-xs-12">Hashtag</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<input id="tags_1" name="tags" type="text" class="tags form-control"
-								value="" />
+								value="{{$offer['hashStr']}}" />
 							<div id="suggestions-container"
 								style="position: relative; float: left; width: 250px; margin: 10px;"></div>
 						</div>
@@ -429,7 +429,8 @@
 					<div class="ln_solid"></div>
 					<div class="form-group">
 						<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-							<button type="submit" class="btn btn-success">Submit</button>
+							<button type="submit" class="btn btn-success">Update</button>
+							<a href="{{route('offers')}}" class="btn btn-primary">Back</a>
 						</div>
 					</div>
 				</form>
