@@ -110,8 +110,8 @@
 												<div class="modal-dialog modal-sm">
 													<div class="modal-content">
 														<div class="modal-body">
-															<h4>Text in a modal</h4>
-															<p>Are you sure you want yo promote this candidate to the next stage?</p>
+															<h4>Promote Candidate</h4>
+															<p>Are you sure you want to promote this candidate to the next stage?</p>
 														</div>
 														<div class="modal-footer">
 															<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
@@ -126,8 +126,8 @@
 												<div class="modal-dialog modal-sm">
 													<div class="modal-content">
 														<div class="modal-body">
-															<h4>Text in a modal</h4>
-															<p>Are you sure you want yo promote this candidate to the next stage?</p>
+															<h4>Reject candidate</h4>
+															<p>Are you sure you want to reject this candidate?</p>
 														</div>
 														<div class="modal-footer">
 															<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
