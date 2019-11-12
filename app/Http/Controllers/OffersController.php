@@ -81,7 +81,6 @@ class OffersController extends Controller
                 
             }
             
-//             dd($offer);
 //             dd($offer, $applicants);
             return view("pages.backend.offers.details")
                 ->with('offer', $offer)
@@ -98,12 +97,12 @@ class OffersController extends Controller
         try {
             // Build request
             $body = $request->all();
-            dd($body);
+            
             // Store offer
-            $res = $this->client->post(env('API_BASE_URL').'admin/offers/reject', [
+            $this->client->post(env('API_BASE_URL').'admin/offers/reject', [
                 'body'=> json_encode($body)
             ]);
-            dd(json_decode($res->getBody(),true));
+            
             // Redirect to offers
             return redirect()->route('offers/details', ['id' => $request->offerId, 'phase' => $request->phase]);
         } catch(RequestException $e){

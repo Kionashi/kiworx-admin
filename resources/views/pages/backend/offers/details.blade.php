@@ -4,10 +4,9 @@
 <!-- page content -->
 <div class="">
 	<div class="clearfix"></div>
-
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
-
+			
 			<div class="x_title">
 				<h2>
 					<i class="fa fa-bars"></i> {{$offer['job_title']}}
@@ -43,8 +42,8 @@
 								<div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
 									<span class="count_top"><i class="fa fa-user"></i> {{$interview['name']}}</span>
 									<div class="count">{{count($interview['applyments'])}}</div>
-									<span class="count_bottom">
-										<a href="#" class="red">Rejected {{$interview['rejected']}}</a>
+									<span class="count_bottom red">
+										Rejected {{$interview['rejected']}}
 									</span>
 								</div>
 								</a>
@@ -68,16 +67,16 @@
 								<tbody>
 									@foreach($applicants as $i => $applicant)
 									<tr style="height: 40px;">
-										<td><a href="{{route('users/details', $applicant['user']['id'])}}">{{ $applicant['user']['name'] }} {{ $applicant['user']['lastname'] }}</a></td>
+										<td><a href="{{route('applicants/details', $applicant['id'])}}">{{ $applicant['user']['name'] }} {{ $applicant['user']['lastname'] }}</a></td>
 										<td><a href="mailto:{{ $applicant['user']['email'] }}">{{ $applicant['user']['email'] }}</a></td>
 										<td><a href="tel:{{ $applicant['user']['phone'] }}">{{ $applicant['user']['phone'] }}</a></td>
 										<td>
 											@if($applicant['status'] == 'PENDING')
-												<button class="btn btn-warning btn-xs">Pending</button>
+												<button class="btn btn-warning btn-xs">{{\App\Enums\OfferApplicationStatus::getFriendlyName($applicant['status'])}}</button>
 											@elseif($applicant['status'] == 'ACCEPTED')
-												<button class="btn btn-success btn-xs">Accepted</button>
+												<button class="btn btn-success btn-xs">{{\App\Enums\OfferApplicationStatus::getFriendlyName($applicant['status'])}}</button>
 											@else
-												<button class="btn btn-danger btn-xs">Rejected</button>
+												<button class="btn btn-danger btn-xs">{{\App\Enums\OfferApplicationStatus::getFriendlyName($applicant['status'])}}</button>
 											@endif
 										</td>
 										<td>
@@ -148,8 +147,7 @@
 						</div>
 						<!-- OFFER DETAILS -->
 						<div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-							<form action="{{route('offers/store')}}"
-            					class="form-horizontal form-label-left" method="post">
+							<form action="{{route('offers/store')}}" class="form-horizontal form-label-left" method="post">
             					@csrf
             					<div class="form-group">
             						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="jobTitle">Position <span class="required">*</span></label>

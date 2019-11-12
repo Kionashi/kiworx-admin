@@ -420,16 +420,15 @@
 					<div class="form-group">
 						<label class="control-label col-md-3 col-sm-3 col-xs-12">Hashtag</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input id="tags_1" name="tags" type="text" class="tags form-control"
-								value="" />
-							<div id="suggestions-container"
-								style="position: relative; float: left; width: 250px; margin: 10px;"></div>
+							<input id="tags_1" name="tags" type="text" class="tags form-control" value="" />
+							<div id="suggestions-container" style="position: relative; float: left; width: 250px; margin: 10px;"></div>
 						</div>
 					</div>
 					<div class="ln_solid"></div>
 					<div class="form-group">
 						<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
 							<button type="submit" class="btn btn-success">Submit</button>
+							<a href="{{route('offers')}}" class="btn btn-primary">Back</a>
 						</div>
 					</div>
 				</form>

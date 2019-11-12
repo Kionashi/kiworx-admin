@@ -47,7 +47,7 @@ Route::group(['middleware' => ['admin.auth','admin.notifications']], function ()
     Route::get('/users/details/{id}', 'UsersController@details')->name('users/details');
     Route::get('/users/delete/{id}', 'UsersController@destroy')->name('users/delete');
     Route::get('/candidates', 'UsersController@candidatesDatabase')->name('candidates');
-//     Route::get('/candidate/details/{id}', 'UsersController@candidatesDetails')->name('candidates/details');
+    Route::get('/applicants/details/{id}', 'ApplicantsController@details')->name('applicants/details');
     
     // Companies
     Route::get('/companies', 'CompaniesController@index')->name('companies');

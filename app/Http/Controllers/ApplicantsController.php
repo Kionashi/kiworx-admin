@@ -9,7 +9,7 @@ use GuzzleHttp\Exception\ServerException;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\RequestException;
 
-class AdminUsersController extends Controller
+class ApplicantsController extends Controller
 {
     
     public function details($id){
@@ -20,7 +20,7 @@ class AdminUsersController extends Controller
             
             // Return view
             return view("pages.backend.applicants.details")
-            ->with('applicant', $applicant)
+                ->with('applicant', $applicant)
             ;
         } catch(RequestException $e) {
             // Handle client unexpected error
