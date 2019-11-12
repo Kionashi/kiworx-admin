@@ -24,7 +24,7 @@ class OffersController extends Controller
                 ->with('offers', $offers)
             ;
         } catch(RequestException $e){
-            dd($e->getCode());
+            dd($e);
             return $this->handleError($e->getCode());
         }
         

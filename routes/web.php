@@ -69,6 +69,9 @@ Route::group(['middleware' => ['admin.auth','admin.notifications']], function ()
     Route::post('/offers/promote', 'OffersController@promote')->name('offers/promote');
     Route::post('/offers/reject', 'OffersController@reject')->name('offers/reject');
     
+    // Comments
+    Route::post('/comments/store', 'CommentsController@store')->name('comments/store');
+    
     // Notifications
     Route::get('/notifications', 'NotificationsController@index')->name('notifications');
     Route::get('/notifications/{id}', 'NotificationsController@details')->name('notifications/details');

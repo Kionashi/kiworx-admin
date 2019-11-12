@@ -17,7 +17,7 @@ class ApplicantsController extends Controller
             // Get user
             $res = $this->client->get(env('API_BASE_URL').'admin/applicants/'.$id);
             $applicant = json_decode($res->getBody(),true);
-            
+//             dd($applicant);
             // Return view
             return view("pages.backend.applicants.details")
                 ->with('applicant', $applicant)

@@ -61,6 +61,7 @@
 										<th>Email</th>
 										<th>Phone</th>
 										<th>Status</th>
+										<th>Fecha de aplicación</th>
 										<th>Actions</th>
 									</tr>
 								</thead>
@@ -79,6 +80,7 @@
 												<button class="btn btn-danger btn-xs">{{\App\Enums\OfferApplicationStatus::getFriendlyName($applicant['status'])}}</button>
 											@endif
 										</td>
+										<td>{{ $applicant['created_at'] }}</td>
 										<td>
 											<form id="promoteForm-{{$i}}" action="{{ route('offers/promote') }}" method="post">
 												@csrf
