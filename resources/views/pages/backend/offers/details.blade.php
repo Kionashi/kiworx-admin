@@ -68,7 +68,7 @@
 								<tbody>
 									@foreach($applicants as $i => $applicant)
 									<tr style="height: 40px;">
-										<td><a href="{{route('applicants/details', $applicant['id'])}}">{{ $applicant['user']['name'] }} {{ $applicant['user']['lastname'] }}</a></td>
+										<td><a href="{{route('applicants/details', $applicant['id'])}}">{{$applicant['id']}} - {{ $applicant['user']['name'] }} {{ $applicant['user']['lastname'] }}</a></td>
 										<td><a href="mailto:{{ $applicant['user']['email'] }}">{{ $applicant['user']['email'] }}</a></td>
 										<td><a href="tel:{{ $applicant['user']['phone'] }}">{{ $applicant['user']['phone'] }}</a></td>
 										<td>

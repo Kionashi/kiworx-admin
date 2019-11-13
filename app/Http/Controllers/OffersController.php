@@ -67,6 +67,7 @@ class OffersController extends Controller
         try{
             $res = $this->client->get(env('API_BASE_URL').'admin/offers/'.$id);
             $offer = json_decode($res->getBody(),true);
+//             dd(json_decode($res->getBody()));
             $applicants = array();
             foreach ($offer['phases'] as $i => $offerPhase) {
                 // Get applicants
@@ -115,11 +116,11 @@ class OffersController extends Controller
         try {
             // Build request
             $body = $request->all();
-
             // Store offer
             $this->client->post(env('API_BASE_URL').'admin/offers/promote', [
                 'body'=> json_encode($body)
             ]);
+//             dd(json_decode($res->getBody(),true));
             
             // Redirect to offers
             return redirect()->route('offers/details', ['id' => $request->offerId, 'phase' => $request->phase]);
@@ -188,6 +189,62 @@ class OffersController extends Controller
         return redirect()->route('offers');
     }
     
+    public function close($id){
+        
+        try{
+            $body = [
+                'finished' => true
+            ];
+            $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$id, ['body'=> json_encode($body)]);
+//             dd(json_decode($res->getBody()));
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+        
+        return redirect()->route('offers');
+    }
+    
+    public function open($id){
+        try{
+            $body = [
+                'finished' => false
+            ];
+            $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$id, ['body'=> json_encode($body)]);
+//             dd(json_decode($res->getBody()));
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+        
+        return redirect()->route('offers');
+    }
+    
+    public function activate($id){
+        try{
+            $body = [
+                'enabled' => true
+            ];
+            $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$id, ['body'=> json_encode($body)]);
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+        
+        return redirect()->route('offers');
+    }
+    
+    public function deactivate($id){
+        
+        try{
+            $body = [
+                'enabled' => false
+            ];
+            $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$id, ['body'=> json_encode($body)]);
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+        
+        return redirect()->route('offers');
+    }
+    
     public function publicList($company)
     {
         try {
@@ -231,7 +288,6 @@ class OffersController extends Controller
                 ->with('offerCode',$code)
             ;
         } catch(RequestException $e){
-            dd($e);
             return $this->handleError($e->getCode());
         }
     }

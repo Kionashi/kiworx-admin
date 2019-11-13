@@ -24,22 +24,30 @@
 							<th>Position</th>
 							<th>Category</th>
 							<th>Company</th>
+							<th>Visibility</th>
 							<th>Status</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($offers as $offer)
+						@foreach($offers as $i => $offer)
 						<tr style="height: 40px;">
 							<td><a href="{{route('offer/public', ['company' => $offer['company']['friendly_name'], 'code' => $offer['code']])}}" target="_blank">View offer</a></td>
 							<td><a href="{{route('offers/details', ['id' => $offer['id'], 'order' => 1])}}">{{ $offer['job_title'] }}</a></td>
 							<td>{{\App\Enums\OfferCategory::getFriendlyName($offer['category'])}}</td>
 							<td>{{ $offer['company']['name'] }}</td>
 							<td>
-								@if($offer['finished'])
-									<button class="btn btn-danger btn-xs">Inactivo</button>
+								@if($offer['enabled'])
+									<button class="btn btn-success btn-xs">Visible</button>
 								@else
-									<button class="btn btn-success btn-xs">Activo</button>
+									<button class="btn btn-danger btn-xs">Hidden</button>
+								@endif
+							</td>
+							<td>
+								@if($offer['finished'])
+									<button class="btn btn-danger btn-xs">Finished</button>
+								@else
+									<button class="btn btn-success btn-xs">Active</button>
 								@endif
 							</td>
 							<td>
@@ -49,9 +57,56 @@
 								<a href="{{route('offers/edit', $offer['id'])}}" title="Editar" class="icon-table">
 									<i class="fa fa-edit"></i>
 								</a>
-								<a href="{{route('offers/delete', $offer['id'])}}" title="Eliminar" class="icon-table">
-									<i class="fa fa-trash"></i>
-								</a>
+								@if($offer['enabled'])
+    								<span title="Disable" class="icon-table red" data-toggle="modal" data-target=".bs-deactivate-{{$i}}-modal-sm">
+    									<i class="fa fa-times-circle"></i>
+    								</span>
+								@else
+    								<a href="{{route('offers/activate', $offer['id'])}}" title="Enable" class="icon-table green">
+    									<i class="fa fa-check"></i>
+    								</a>
+								@endif
+								@if($offer['finished'])
+									<a href="{{route('offers/open', $offer['id'])}}" title="Open" class="icon-table green">
+    									<i class="fa fa-circle"></i>
+    								</a>
+								@else
+    								<span title="Finish" class="icon-table red" data-toggle="modal" data-target=".bs-close-{{$i}}-modal-sm">
+    									<i class="fa fa-times"></i>
+    								</span>
+								@endif
+        						<!-- CONFIRMATION DEACTIVATE MODAL -->
+        						<div class="modal fade bs-deactivate-{{$i}}-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+        							<div class="modal-dialog modal-sm">
+        								<div class="modal-content">
+        									<div class="modal-body">
+        										<h4>Deactivate Job</h4>
+        										<p>Are you sure you want to deactivate this job?</p>
+        									</div>
+        									<div class="modal-footer">
+        										<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        										<a href="{{route('offers/deactivate', $offer['id'])}}" title="Desactivar" class="btn btn-primary">Yes</a>
+        									</div>
+        								</div>
+        							</div>
+        						</div>
+        						
+        						<!-- CONFIRMATION CLOSE MODAL -->
+        						<div class="modal fade bs-close-{{$i}}-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+        							<div class="modal-dialog modal-sm">
+        								<div class="modal-content">
+        									<div class="modal-body">
+        										<h4>Finish process</h4>
+        										<p>Are you sure you want to finish de recruitment process?</p>
+        										<p>An email will be sended to rejected candidates</p>
+        									</div>
+        									<div class="modal-footer">
+        										<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        										<a href="{{route('offers/close', $offer['id'])}}" title="Cerrar" class="btn btn-primary">Yes</a>
+        									</div>
+        								</div>
+        							</div>
+        						</div>
 							</td>
 						</tr>
 						@endforeach

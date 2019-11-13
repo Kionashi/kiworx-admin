@@ -65,7 +65,10 @@ Route::group(['middleware' => ['admin.auth','admin.notifications']], function ()
     Route::get('/offers/edit/{id}', 'OffersController@edit')->name('offers/edit');
     Route::post('/offers/update', 'OffersController@update')->name('offers/update');
     Route::get('/offers/details/{id}/{phase}', 'OffersController@details')->name('offers/details');
-    Route::get('/offers/delete/{id}', 'OffersController@destroy')->name('offers/delete');
+    Route::get('/offers/close/{id}', 'OffersController@close')->name('offers/close');
+    Route::get('/offers/activate/{id}', 'OffersController@activate')->name('offers/activate');
+    Route::get('/offers/deactivate/{id}', 'OffersController@deactivate')->name('offers/deactivate');
+    Route::get('/offers/open/{id}', 'OffersController@open')->name('offers/open');
     Route::post('/offers/promote', 'OffersController@promote')->name('offers/promote');
     Route::post('/offers/reject', 'OffersController@reject')->name('offers/reject');
     
