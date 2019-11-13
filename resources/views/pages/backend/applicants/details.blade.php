@@ -106,7 +106,6 @@
 						</div>
 					</div>
 				</form>
-				
 				<form id="promoteForm" action="{{ route('offers/promote') }}" method="post">
 					@csrf
 					<input type="hidden" name="applicantId" value="{{ $applicant['id'] }}">
@@ -145,7 +144,7 @@
 					@csrf
     				<div class="form-group">
     					<div class="col-md-12 col-sm-12 col-xs-12">
-    						<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#requirements-container">
+    						<div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#comment-container">
     							<div class="btn-group">
     								<a class="btn dropdown-toggle" data-toggle="dropdown"
     									title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
@@ -219,15 +218,15 @@
     							</div>
     						</div>
     						
-    						<div id="comment-container" class="editor-wrapper"></div>
+    						<div id="comment-container" class="editor-wrapper" style="min-height: 150px;"></div>
     						
     						<textarea name="comment" id="comment" style="display: none;"></textarea>
     					</div>
     				</div>
     				<div class="ln_solid"></div>
     				<div class="form-group">
-    					<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-    						<button type="submit" class="btn btn-success">Submit</button>
+    					<div class="row" style="text-align: center;">
+    						<button style="margin: 1em auto;" type="submit" class="btn btn-success">Send</button>
     					</div>
     				</div>
     				
