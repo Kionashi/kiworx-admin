@@ -134,6 +134,7 @@ class OffersController extends Controller
         try{
             $res = $this->client->request('GET', env('API_BASE_URL').'admin/offers/'.$id);
             $offer = json_decode($res->getBody(),true);
+//             dd($offer);
             $hashStr = '';
             foreach ($offer['hashtags'] as $i => $hashtag) {
                 $hashStr = $i != 0 ? $hashStr.',': $hashtag['name'];
@@ -156,25 +157,14 @@ class OffersController extends Controller
     public function update(Request $request) {
         
         try{
-            $finished = $request->finished == 'true'?true:false;
-            
-            $body = [
-                'all' => $request->all(),
-                'position' => $request->position,
-                'description' => $request->description,
-                'experience' => $request->experience,
-                'start_date' => $request->start_date,
-                'contract_type' => $request->contract_type,
-                'category' => $request->category,
-                'finished' => $finished,
-                'companyId' => $request->companyId,
-            ];
+            $body = $request->all();
+//             dd($body);
             $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$request->id, ['body'=> json_encode($body)]);
+//             dd(json_decode($res->getBody()));
         } catch(RequestException $e){
             dd($e->getCode());
             return $this->handleError($e->getCode());
         }
-        $response = json_decode($res->getBody());
         return redirect()->route('offers');
     }
 

@@ -270,17 +270,14 @@
             					<div class="form-group">
             						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="location">Location</label>
             						<div class="col-md-6 col-sm-6 col-xs-12">
-            							<input type="text" id="location" name="location" value="{{ $offer['location'] }}" class="form-control col-md-7 col-xs-12">
+            							<input type="text" id="location" name="location" disabled value="{{ $offer['location'] }}" class="form-control col-md-7 col-xs-12">
             						</div>
             					</div>
             					<div class="form-group">
             						<label class="control-label col-md-3 col-sm-3 col-xs-12">Hashtag</label>
             						<div class="col-md-6 col-sm-6 col-xs-12">
-            							<p>
-            								@foreach ($offer['hashtags'] as $hashtag)
-        										{{$hashtag['name']}}
-    										@endforeach
-										</p>
+            							<input id="tags_1" name="tags" type="text" disabled class="tags form-control" value="@foreach ($offer['hashtags'] as $hashtag){{$hashtag['name']}},@endforeach" />
+            							<div id="suggestions-container" style="position: relative; float: left; width: 250px; margin: 10px;"></div>
             						</div>
             					</div>
             					<div class="ln_solid"></div>
@@ -316,33 +313,31 @@
 @endsection
 @section('extended-scripts')
 <!-- Datatables -->
-<script
-	src="{{ asset('gentelella/vendors/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/datatables.net-scroller/js/dataTables.scroller.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/datatables.net-scroller/js/dataTables.scroller.min.js') }}"></script>
 <script src="{{ asset('gentelella/vendors/jszip/dist/jszip.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/pdfmake/build/pdfmake.min.js') }}"></script>
-<script
-	src="{{ asset('gentelella/vendors/pdfmake/build/vfs_fonts.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/pdfmake/build/pdfmake.min.js') }}"></script>
+<script src="{{ asset('gentelella/vendors/pdfmake/build/vfs_fonts.js') }}"></script>
+
+<!-- jQuery Tags Input -->
+<script src="{{ asset('gentelella/vendors/jquery.tagsinput/src/jquery.tagsinput.js') }}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+    	$('#tags_1').tagsInput({
+    	  width: 'auto',
+    	  interactive:false
+    	});
+    });
+</script>
 @endsection

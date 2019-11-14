@@ -28,9 +28,9 @@
 			</div>
 			@endif
 			<div class="x_content">
-				<form id="createOfferForm" action="{{route('offers/store')}}"
-					class="form-horizontal form-label-left" method="post">
+				<form id="createOfferForm" action="{{route('offers/update')}}" class="form-horizontal form-label-left" method="post">
 					@csrf
+					<input type="hidden" id="id" name="id" required="required" value="{{$offer['id']}}" class="form-control col-md-7 col-xs-12">
 					<div class="form-group">
 						<label class="control-label col-md-3 col-sm-3 col-xs-12"
 							for="jobTitle">Position <span class="required">*</span>
@@ -46,7 +46,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<select id="experience" name="experience" required="required" class="form-control col-md-7 col-xs-12">
 								@foreach (\App\Enums\OfferExperience::values() as $offerExperience)
-									<option value="{{$offerExperience}}">{{ \App\Enums\OfferExperience::getFriendlyName($offerExperience) }}</option>
+									<option @if($offer['experience'] == $offerExperience)selected @endif value="{{$offerExperience}}">{{ \App\Enums\OfferExperience::getFriendlyName($offerExperience) }}</option>
 								@endforeach
 							</select>
 						</div>
@@ -349,7 +349,7 @@
 							<select id="contractType" name="contractType" required="required"
 								class="form-control col-md-7 col-xs-12">
 								@foreach (\App\Enums\OfferContractType::values() as $offerContractType)
-									<option value="{{$offerContractType}}">{{ \App\Enums\OfferContractType::getFriendlyName($offerContractType) }}</option>
+									<option @if($offer['contract_type'] == $offerContractType)selected @endif value="{{$offerContractType}}">{{ \App\Enums\OfferContractType::getFriendlyName($offerContractType) }}</option>
 								@endforeach
 							</select>
 						</div>
@@ -363,7 +363,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<select id="workingDays" name="workingDays" required="required" class="form-control col-md-7 col-xs-12">
 								@foreach (\App\Enums\OfferWorkingDays::values() as $offerWorkingDay)
-									<option value="{{$offerWorkingDay}}">{{ \App\Enums\OfferWorkingDays::getFriendlyName($offerWorkingDay) }}</option>
+									<option @if($offer['working_days'] == $offerWorkingDay)selected @endif value="{{$offerWorkingDay}}">{{ \App\Enums\OfferWorkingDays::getFriendlyName($offerWorkingDay) }}</option>
 								@endforeach
 							</select>
 						</div>
@@ -377,7 +377,7 @@
 							<select id="category" name="category" required="required"
 								class="form-control col-md-7 col-xs-12">
 								@foreach (\App\Enums\OfferCategory::values() as $offerCategory)
-									<option value="{{$offerCategory}}">{{ \App\Enums\OfferCategory::getFriendlyName($offerCategory) }}</option>
+									<option @if($offer['category'] == $offerCategory)selected @endif value="{{$offerCategory}}">{{ \App\Enums\OfferCategory::getFriendlyName($offerCategory) }}</option>
 								@endforeach
 							</select>
 						</div>
@@ -391,7 +391,7 @@
 							<select id="workingLanguage" name="workingLanguage" required="required"
 								class="form-control col-md-7 col-xs-12">
 								@foreach (\App\Enums\OfferWorkingLanguages::values() as $offerLanguage)
-									<option value="{{$offerLanguage}}">{{ \App\Enums\OfferWorkingLanguages::getFriendlyName($offerLanguage) }}</option>
+									<option @if($offer['working_language'] == $offerLanguage)selected @endif value="{{$offerLanguage}}">{{ \App\Enums\OfferWorkingLanguages::getFriendlyName($offerLanguage) }}</option>
 								@endforeach
 							</select>
 						</div>
@@ -404,7 +404,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<select id="companyId" name="companyId" required="required" class="form-control col-md-7 col-xs-12">
 								@foreach($companies as $company)
-									<option value="{{ $company['id'] }}">{{ $company['name'] }}</option>
+									<option @if($offer['company']['id'] == $company['id'])selected @endif value="{{ $company['id'] }}">{{ $company['name'] }}</option>
 								@endforeach
 							</select>
 						</div>
