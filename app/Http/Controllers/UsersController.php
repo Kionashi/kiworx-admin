@@ -181,7 +181,24 @@ class UsersController extends Controller
         } catch(RequestException $e){
             return $this->handleError($e->getCode());
         }
-        
+    }
+    
+    public function candidatesDetails($id) {
+        // User management
+        try{
+            // Get user list
+            $res = $this->client->get(env('API_BASE_URL').'admin/users');
+            
+            // Parse response
+            $users = json_decode($res->getBody(),true);
+            
+            // Return view
+            return view("pages.backend.users.candidates")
+            ->with('users', $users)
+            ;
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
     }
     
 }

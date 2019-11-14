@@ -1,4 +1,6 @@
-@extends('layouts.app') @section('content')
+@extends('layouts.app')
+@section('section', 'Jobs')
+@section('content')
 <div class="">
 	<div class="clearfix"></div>
 
@@ -6,45 +8,105 @@
 		<div class="x_panel">
 			<div class="x_title">
 				<h2>
-					Ofertas <small>Listar</small>
+					Jobs <small>List</small>
 				</h2>
 				<ul class="nav navbar-right panel_toolbox">
-					<li><a style="color: #cc3ba0;" href="{{route('offers/create')}}">Nueva oferta <i class="fa fa-plus"></i></a></li>
+					<li><a href="{{route('offers/create')}}">New job <i class="fa fa-plus"></i></a></li>
 				</ul>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
 				@if (isset($offers))
-				<table id="datatable-buttons"
-					class="table table-striped table-bordered">
+				<table id="datatable-buttons" class="table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>Posición</th>
-							<th>Categoria</th>
-							<th>Compañia</th>
-							<th>Estado</th>
-							<th>Acciones</th>
+							<th>Public URL</th>
+							<th>Position</th>
+							<th>Category</th>
+							<th>Company</th>
+							<th>Visibility</th>
+							<th>Status</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($offers as $offer)
+						@foreach($offers as $i => $offer)
 						<tr style="height: 40px;">
-							<td><a href="{{route('offers/details', $offer['id'])}}">{{ $offer['position'] }}</a></td>
-							<td>{{ $offer['category'] }}</td>
+							<td><a href="{{route('offer/public', ['company' => $offer['company']['friendly_name'], 'code' => $offer['code']])}}" target="_blank">View offer</a></td>
+							<td><a href="{{route('offers/details', ['id' => $offer['id'], 'order' => 1])}}">{{ $offer['job_title'] }}</a></td>
+							<td>{{\App\Enums\OfferCategory::getFriendlyName($offer['category'])}}</td>
 							<td>{{ $offer['company']['name'] }}</td>
 							<td>
-								@if($offer['active'])
-									<button class="btn btn-success btn-xs">Activo</button>
+								@if($offer['enabled'])
+									<button class="btn btn-success btn-xs">Visible</button>
 								@else
-									<button class="btn btn-danger btn-xs">Inactivo</button>
+									<button class="btn btn-danger btn-xs">Hidden</button>
 								@endif
 							</td>
-							<td><a href="{{route('offers/details', $offer['id'])}}"
-								title="Detalles" class="icon-table"><i class="fa fa-search"></i></a>
-								<a href="{{route('offers/edit', $offer['id'])}}"
-								title="Editar" class="icon-table"><i class="fa fa-edit"></i></a>
-								<a href="{{route('offers/delete', $offer['id'])}}"
-								title="Eliminar" class="icon-table"><i class="fa fa-trash"></i></a>
+							<td>
+								@if($offer['finished'])
+									<button class="btn btn-danger btn-xs">Finished</button>
+								@else
+									<button class="btn btn-success btn-xs">Active</button>
+								@endif
+							</td>
+							<td>
+								<a href="{{ route('offers/details', ['id' => $offer['id'], 'order' => 1]) }}" title="Detalles" class="icon-table">
+									<i class="fa fa-search"></i>
+								</a>
+								<a href="{{route('offers/edit', $offer['id'])}}" title="Editar" class="icon-table">
+									<i class="fa fa-edit"></i>
+								</a>
+								@if($offer['enabled'])
+    								<span title="Disable" class="icon-table red" data-toggle="modal" data-target=".bs-deactivate-{{$i}}-modal-sm">
+    									<i class="fa fa-times-circle"></i>
+    								</span>
+								@else
+    								<a href="{{route('offers/activate', $offer['id'])}}" title="Enable" class="icon-table green">
+    									<i class="fa fa-check"></i>
+    								</a>
+								@endif
+								@if($offer['finished'])
+									<a href="{{route('offers/open', $offer['id'])}}" title="Open" class="icon-table green">
+    									<i class="fa fa-circle"></i>
+    								</a>
+								@else
+    								<span title="Finish" class="icon-table red" data-toggle="modal" data-target=".bs-close-{{$i}}-modal-sm">
+    									<i class="fa fa-times"></i>
+    								</span>
+								@endif
+        						<!-- CONFIRMATION DEACTIVATE MODAL -->
+        						<div class="modal fade bs-deactivate-{{$i}}-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+        							<div class="modal-dialog modal-sm">
+        								<div class="modal-content">
+        									<div class="modal-body">
+        										<h4>Deactivate Job</h4>
+        										<p>Are you sure you want to deactivate this job?</p>
+        									</div>
+        									<div class="modal-footer">
+        										<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        										<a href="{{route('offers/deactivate', $offer['id'])}}" title="Desactivar" class="btn btn-primary">Yes</a>
+        									</div>
+        								</div>
+        							</div>
+        						</div>
+        						
+        						<!-- CONFIRMATION CLOSE MODAL -->
+        						<div class="modal fade bs-close-{{$i}}-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+        							<div class="modal-dialog modal-sm">
+        								<div class="modal-content">
+        									<div class="modal-body">
+        										<h4>Finish process</h4>
+        										<p>Are you sure you want to finish de recruitment process?</p>
+        										<p>An email will be sended to rejected candidates</p>
+        									</div>
+        									<div class="modal-footer">
+        										<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        										<a href="{{route('offers/close', $offer['id'])}}" title="Cerrar" class="btn btn-primary">Yes</a>
+        									</div>
+        								</div>
+        							</div>
+        						</div>
 							</td>
 						</tr>
 						@endforeach

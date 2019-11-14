@@ -1,6 +1,14 @@
 <div class="navbar nav_title" style="border: 0;">
-	<a href="{{route('home')}}" class="site_title"><i class="fa fa-paw"></i>
-		<span>{{env('APP_NAME')}}</span></a>
+	<a href="{{route('home')}}" class="site_title">
+		<div class="col-md-3">
+    		<img style="width: 100%;" src="{{asset('images/triangles.png')}}" />
+        </div>
+        <span>
+            <div class="col-md-8">
+        		<img style="width: 100%;" src="{{asset('images/logo-alt.png')}}" />
+            </div>
+        </span>
+	</a>
 </div>
 
 <div class="clearfix"></div>
@@ -36,11 +44,11 @@
 			@endif
 			
 			<li>
-				<a href="{{route('companies')}}"><i class="fa fa-desktop"></i> Startup</a>
+				<a href="{{route('companies')}}"><i class="fa fa-desktop"></i> Company</a>
 			</li>
 			
 			<li>
-				<a href="{{route('offers')}}"><i class="fa fa-table"></i> Ofertas</a>
+				<a href="{{route('offers')}}"><i class="fa fa-table"></i> Jobs</a>
 			</li>
 			
 			<li>
@@ -53,7 +61,7 @@
 <!-- /sidebar menu -->
 
 <!-- /menu footer buttons -->
-<div class="sidebar-footer hidden-small">
+<div class="sidebar-footer hidden-small" style="visibility: hidden;">
 	<a data-toggle="tooltip" data-placement="top" title="Settings"> <span
 		class="glyphicon glyphicon-cog" aria-hidden="true"></span>
 	</a> <a data-toggle="tooltip" data-placement="top"

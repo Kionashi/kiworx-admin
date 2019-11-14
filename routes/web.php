@@ -10,7 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/login', 'AuthController@login')->name('login');
 Route::post('/login', 'AuthController@storeSession')->name('login');
 Route::get('/password-recovery', 'AuthController@passwordRecovery')->name('password-recovery');
@@ -48,6 +47,7 @@ Route::group(['middleware' => ['admin.auth','admin.notifications']], function ()
     Route::get('/users/details/{id}', 'UsersController@details')->name('users/details');
     Route::get('/users/delete/{id}', 'UsersController@destroy')->name('users/delete');
     Route::get('/candidates', 'UsersController@candidatesDatabase')->name('candidates');
+    Route::get('/applicants/details/{id}', 'ApplicantsController@details')->name('applicants/details');
     
     // Companies
     Route::get('/companies', 'CompaniesController@index')->name('companies');
@@ -64,9 +64,17 @@ Route::group(['middleware' => ['admin.auth','admin.notifications']], function ()
     Route::post('/offers/store', 'OffersController@store')->name('offers/store');
     Route::get('/offers/edit/{id}', 'OffersController@edit')->name('offers/edit');
     Route::post('/offers/update', 'OffersController@update')->name('offers/update');
-    Route::get('/offers/details/{id}', 'OffersController@details')->name('offers/details');
-    Route::get('/offers/delete/{id}', 'OffersController@destroy')->name('offers/delete');
-
+    Route::get('/offers/details/{id}/{phase}', 'OffersController@details')->name('offers/details');
+    Route::get('/offers/close/{id}', 'OffersController@close')->name('offers/close');
+    Route::get('/offers/activate/{id}', 'OffersController@activate')->name('offers/activate');
+    Route::get('/offers/deactivate/{id}', 'OffersController@deactivate')->name('offers/deactivate');
+    Route::get('/offers/open/{id}', 'OffersController@open')->name('offers/open');
+    Route::post('/offers/promote', 'OffersController@promote')->name('offers/promote');
+    Route::post('/offers/reject', 'OffersController@reject')->name('offers/reject');
+    
+    // Comments
+    Route::post('/comments/store', 'CommentsController@store')->name('comments/store');
+    
     // Notifications
     Route::get('/notifications', 'NotificationsController@index')->name('notifications');
     Route::get('/notifications/{id}', 'NotificationsController@details')->name('notifications/details');
@@ -81,6 +89,6 @@ Route::get('/{company}/jobs/{code}', 'OffersController@publicDetail')->name('off
 Route::post('/{company}/jobs/{code}', 'OffersController@storeApplyment')->name('offer/apply');
 
 //Test
-Route::get('/test', 'TestsController@test')->name('test');
+Route::get('/test', 'TestsController@index')->name('test');
 Route::post('/test-post', 'TestsController@testPost')->name('test-post');
 

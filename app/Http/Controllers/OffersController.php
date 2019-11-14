@@ -4,65 +4,28 @@ namespace App\Http\Controllers;
 
 use function GuzzleHttp\json_decode;
 use function GuzzleHttp\json_encode;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Storage;
+use App\Enums\OfferApplicationStatus;
 
 class OffersController extends Controller
 {
 
     public function index(){
         try{
-            $res = $this->client->get(env('API_BASE_URL').'admin/offers', []);
+            // Get offers
+            $res = $this->client->get(env('API_BASE_URL').'admin/offers/');
             $offers = json_decode($res->getBody(),true);
-            $offers = array(
-                [
-                    'id'        => 1,
-                    'position'  => 'Programador Senior Android/Java',
-                    'category'  => 'IT',
-                    'company'   => array(
-                        'name'  => 'Cabify España'
-                    ),
-                    'active'    => false
-                ],
-                [
-                    'id'        => 2,
-                    'position'  => 'Programador junio PHP',
-                    'category'  => 'IT',
-                    'company'   => array(
-                        'name'  => 'Cabify España'
-                    ),
-                    'active'    => true
-                ],
-                [
-                    'id'        => 1,
-                    'position'  => 'Programador Senior Android/Java',
-                    'category'  => 'IT',
-                    'company'   => array(
-                        'name'  => 'Cabify España'
-                    ),
-                    'active'    => false
-                ],
-                [
-                    'id'        => 2,
-                    'position'  => 'Programador junio PHP',
-                    'category'  => 'IT',
-                    'company'   => array(
-                        'name'  => 'Cabify España'
-                    ),
-                    'active'    => true
-                ]
-            );
+            
+            // Return view
             return view("pages.backend.offers.index")
                 ->with('offers', $offers)
             ;
-        } catch(ClientException $e){
+        } catch(RequestException $e){
             dd($e);
-        } catch(ServerException $e){
-            dd($e->getCode());
+            return $this->handleError($e->getCode());
         }
         
     }
@@ -77,119 +40,93 @@ class OffersController extends Controller
             ;
         } catch(RequestException $e){
             dd($e->getCode());
+            return $this->handleError($e->getCode());
         }
     }
 
     public function store(Request $request){
         try {
+            // Build request
+            $body = $request->all();
             
-            $body = [
-                'all' => $request->all(),
-                'position' => $request->position,
-                'description' => $request->description,
-                'experience' => $request->experience,
-                'start_date' => $request->start_date,
-                'contract_type' => $request->contract_type,
-                'category' => $request->category,
-                'companyId' => $request->companyId,
-            ];
+            // Store offer
             $this->client->post(env('API_BASE_URL').'admin/offers',[
                 'body'=> json_encode($body)
             ]);
+            
+            // Redirect to offers
             return redirect()->route('offers');
         } catch(RequestException $e){
             dd($e->getCode());
+            return $this->handleError($e->getCode());
         }
         
     }
 
-    public function details($id){
+    public function details($id, $phase){
         try{
-//             $res = $this->client->get(env('API_BASE_URL').'admin/offers/'.$id);
-//             $offer = json_decode($res->getBody(),true);
-            $offer = array(
-                'id'                => 1,
-                'position'          => 'Programador Senior Android/Java',
-                'category'          => 'IT',
-                'phases'        => array(
-                    [
-                        'name'      => 'Aplicantes',
-                        'applicant'  => '200',
-                        'rejected'  => '0',
-                        'isFinal'   => false
-                    ],
-                    [
-                        'name'      => 'Elenius',
-                        'applicant'  => '200',
-                        'rejected'  => '190',
-                        'isFinal'   => false
-                    ],
-                    [
-                        'name'      => 'Entrevista #1',
-                        'applicant'  => '10',
-                        'rejected'  => '5',
-                        'isFinal'   => false
-                    ],
-                    [
-                        'name'      => 'Entrevista #2',
-                        'applicant'  => '5',
-                        'rejected'  => '1',
-                        'isFinal'   => false
-                    ],
-                    [
-                        'name'      => 'Propuesta',
-                        'applicant'  => '4',
-                        'rejected'  => '3',
-                        'isFinal'   => false
-                    ],
-                    [
-                        'name'      => 'Contratado',
-                        'applicant'  => '1',
-                        'rejected'  => '1',
-                        'isFinal'   => true
-                    ]
-                    
-                ),
-                'active'            => false,
-                'company'           => array(
-'                   name'  => 'Cabify España'
-                )
-            );
+            $res = $this->client->get(env('API_BASE_URL').'admin/offers/'.$id);
+            $offer = json_decode($res->getBody(),true);
+//             dd(json_decode($res->getBody()));
+            $applicants = array();
+            foreach ($offer['phases'] as $i => $offerPhase) {
+                // Get applicants
+                if ($i == $phase-1) $applicants = $offerPhase['applyments'];
+                
+                // Calculate rejected
+                $rejected = 0;
+                foreach ($offerPhase['applyments'] as $applyment) {
+                    if ($applyment['status'] == OfferApplicationStatus::REJECTED) $rejected++;
+                }
+                $offer['phases'][$i]['rejected'] = $rejected;
+                
+            }
             
-            $applicants = array(
-                [
-                    'name'          => 'Víctor',
-                    'lastname'      => 'Cardozo',
-                    'email'         => 'vcardozo@kiworx.net',
-                    'status'        => 'PENDING'
-                ],
-                [
-                    'name'          => 'Santiago',
-                    'lastname'      => 'Romero',
-                    'email'         => 'romero@kiworx.net',
-                    'status'        => 'ACCEPTED'
-                ],
-                [
-                    'name'          => 'Javier',
-                    'lastname'      => 'Cañizares',
-                    'email'         => 'jcanizares@kiworx.net',
-                    'status'        => 'REJECTED'
-                ],
-                [
-                    'name'          => 'Víctor',
-                    'lastname'      => 'Cardozo',
-                    'email'         => 'vcardozo@kiworx.net',
-                    'status'        => 'PENDING'
-                ],
-            );
-            
-            // dd($offer);
+//             dd($offer, $applicants);
             return view("pages.backend.offers.details")
                 ->with('offer', $offer)
                 ->with('applicants', $applicants)
+                ->with('currentPhase', $phase)
             ;
         } catch(RequestException $e){
             dd($e->getCode());
+            return $this->handleError($e->getCode());
+        }
+    }
+    
+    public function reject(Request $request){
+        try {
+            // Build request
+            $body = $request->all();
+            
+            // Store offer
+            $this->client->post(env('API_BASE_URL').'admin/offers/reject', [
+                'body'=> json_encode($body)
+            ]);
+            
+            // Redirect to offers
+            return redirect()->route('offers/details', ['id' => $request->offerId, 'phase' => $request->phase]);
+        } catch(RequestException $e){
+            dd($e);
+            return $this->handleError($e->getCode());
+        }
+    }
+    
+    public function promote(Request $request){
+        try {
+            // Build request
+            $body = $request->all();
+            // Store offer
+            $this->client->post(env('API_BASE_URL').'admin/offers/promote', [
+                'body'=> json_encode($body)
+            ]);
+//             dd(json_decode($res->getBody(),true));
+            
+            // Redirect to offers
+            return redirect()->route('offers/details', ['id' => $request->offerId, 'phase' => $request->phase]);
+        } catch(RequestException $e){
+            dd($e);
+            return $this->handleError($e->getCode());
         }
     }
     
@@ -197,7 +134,13 @@ class OffersController extends Controller
         try{
             $res = $this->client->request('GET', env('API_BASE_URL').'admin/offers/'.$id);
             $offer = json_decode($res->getBody(),true);
-            
+//             dd($offer);
+            $hashStr = '';
+            foreach ($offer['hashtags'] as $i => $hashtag) {
+                $hashStr = $i != 0 ? $hashStr.',': $hashtag['name'];
+                $hashStr .= $hashtag['name'];
+            }
+            $offer['hashStr'] = $hashStr;
             $res = $this->client->request('GET', env('API_BASE_URL').'admin/companies');
             $companies = json_decode($res->getBody(),true);
             // dd($offer);
@@ -205,34 +148,23 @@ class OffersController extends Controller
                 ->with('companies', $companies)
                 ->with('offer', $offer)
             ;
-        } catch(ClientException $e){
+        } catch(RequestException $e){
             dd($e);
-        } catch(ServerException $e){
-            dd($e->getCode());
+            return $this->handleError($e->getCode());
         }
     }
 
     public function update(Request $request) {
         
         try{
-            $finished = $request->finished == 'true'?true:false;
-            
-            $body = [
-                'all' => $request->all(),
-                'position' => $request->position,
-                'description' => $request->description,
-                'experience' => $request->experience,
-                'start_date' => $request->start_date,
-                'contract_type' => $request->contract_type,
-                'category' => $request->category,
-                'finished' => $finished,
-                'companyId' => $request->companyId,
-            ];
+            $body = $request->all();
+//             dd($body);
             $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$request->id, ['body'=> json_encode($body)]);
+//             dd(json_decode($res->getBody()));
         } catch(RequestException $e){
             dd($e->getCode());
+            return $this->handleError($e->getCode());
         }
-        $response = json_decode($res->getBody());
         return redirect()->route('offers');
     }
 
@@ -240,6 +172,62 @@ class OffersController extends Controller
        
         try{
             $this->client->delete(env('API_BASE_URL').'admin/offers/'.$id);
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+        
+        return redirect()->route('offers');
+    }
+    
+    public function close($id){
+        
+        try{
+            $body = [
+                'finished' => true
+            ];
+            $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$id, ['body'=> json_encode($body)]);
+//             dd(json_decode($res->getBody()));
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+        
+        return redirect()->route('offers');
+    }
+    
+    public function open($id){
+        try{
+            $body = [
+                'finished' => false
+            ];
+            $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$id, ['body'=> json_encode($body)]);
+//             dd(json_decode($res->getBody()));
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+        
+        return redirect()->route('offers');
+    }
+    
+    public function activate($id){
+        try{
+            $body = [
+                'enabled' => true
+            ];
+            $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$id, ['body'=> json_encode($body)]);
+        } catch(RequestException $e){
+            return $this->handleError($e->getCode());
+        }
+        
+        return redirect()->route('offers');
+    }
+    
+    public function deactivate($id){
+        
+        try{
+            $body = [
+                'enabled' => false
+            ];
+            $res = $this->client->put(env('API_BASE_URL').'admin/offers/'.$id, ['body'=> json_encode($body)]);
         } catch(RequestException $e){
             return $this->handleError($e->getCode());
         }
@@ -290,7 +278,6 @@ class OffersController extends Controller
                 ->with('offerCode',$code)
             ;
         } catch(RequestException $e){
-            dd($e);
             return $this->handleError($e->getCode());
         }
     }
