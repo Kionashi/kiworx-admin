@@ -16,11 +16,22 @@ class ApplicantsController extends Controller
         try {
             // Get user
             $res = $this->client->get(env('API_BASE_URL').'admin/applicants/'.$id);
-            $applicant = json_decode($res->getBody(),true);
-//             dd($applicant);
+            $response = json_decode($res->getBody(),true);
+            $previusApplicant = null;
+            $nextApplicant = null;
+            foreach ($response['applicants'] as $i => $applicant) {
+                if ($applicant['id'] == $id) {
+                    $previusApplicant = array_key_exists($i-1, $response['applicants'])?$response['applicants'][$i-1]:null;
+                    $nextApplicant = array_key_exists($i+1, $response['applicants'])?$response['applicants'][$i+1]:null;
+                }
+                
+            }
+//             dd($response);
             // Return view
             return view("pages.backend.applicants.details")
-                ->with('applicant', $applicant)
+                ->with('applicant', $response['applicant'])
+                ->with('previusApplicant', $previusApplicant)
+                ->with('nextApplicant', $nextApplicant)
             ;
         } catch(RequestException $e) {
             // Handle client unexpected error

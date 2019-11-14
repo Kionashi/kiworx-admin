@@ -276,7 +276,19 @@
 <!-- CONFIRMATION REJECT MODAL -->
 <div class="modal fade bs-cv-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
-		<canvas id="user-cv"></canvas>
+		@if(isset($previusApplicant))
+    		<div style="position: absolute; margin: 50% 0 0 -1em; font-size: 50px;">
+    			<a href="{{route('applicants/details', $previusApplicant['id'])}}"><i class="fa fa-arrow-left green"></i></a>
+    		</div>
+		@endif
+		@if(isset($nextApplicant))
+    		<div style="position:absolute; margin: 50% 0 0 103%; font-size: 50px;">
+    			<a href="{{route('applicants/details', $nextApplicant['id'])}}"><i class="fa fa-arrow-right green"></i></a>
+    		</div>
+		@endif
+		<div>
+			<canvas id="user-cv"></canvas>
+		</div>
 	</div>
 </div>
 
