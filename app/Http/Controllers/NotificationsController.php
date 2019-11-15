@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use GuzzleHttp\Exception\RequestException;
 
 class NotificationsController extends Controller
 {
@@ -18,9 +18,7 @@ class NotificationsController extends Controller
             return view("pages.backend.notifications.index")
                 ->with('notifications', $notifications)
             ;
-        } catch(ClientException $e){
-            return $this->handleError($e->getCode());
-        } catch(ServerException $e){
+        } catch(RequestException $e){
             return $this->handleError($e->getCode());
         }
     }
@@ -34,7 +32,7 @@ class NotificationsController extends Controller
             foreach($notifications as $notification){
                 // Check if the user owns the notification that is requesting
                 if($notification['id'] == $id){
-
+                    
                     //Deactivate notification
                     $res = $this->client->put(env('API_BASE_URL').'admin/notifications/'.$id.'/deactivate');
                     
@@ -52,9 +50,7 @@ class NotificationsController extends Controller
             }
             return redirect()->route('notifications')
             ;
-        } catch(ClientException $e){
-            return $this->handleError($e->getCode());
-        } catch(ServerException $e){
+        } catch(RequestException $e){
             return $this->handleError($e->getCode());
         }
     }
@@ -65,14 +61,12 @@ class NotificationsController extends Controller
             $res = $this->client->delete(env('API_BASE_URL').'admin/notifications/'.$id);
             
             // Parse response
-            $notification = json_decode($res->getBody(),true);
+//             $notification = json_decode($res->getBody(),true);
             
             // Return view
             return redirect()->route('notifications');
             ;
-        } catch(ClientException $e){
-            return $this->handleError($e->getCode());
-        } catch(ServerException $e){
+        } catch(RequestException $e){
             return $this->handleError($e->getCode());
         }
     }
@@ -88,9 +82,7 @@ class NotificationsController extends Controller
             // Return view
             return $notification
             ;
-        } catch(ClientException $e){
-            return $this->handleError($e->getCode());
-        } catch(ServerException $e){
+        } catch(RequestException $e){
             return $this->handleError($e->getCode());
         }
     }

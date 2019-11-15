@@ -38,7 +38,7 @@
     </div>
 </header>
 <!-- End Navigation Bar-->
-<section class="job-details" style="background-image: url({{$offer['company']['background_logo']}});">
+<section class="job-details" style="background-image: url({{$offer['company']['background_image']}});">
     <div class="bg-overlay"></div>
     <div class="container">
         <div class="row justify-content-center">

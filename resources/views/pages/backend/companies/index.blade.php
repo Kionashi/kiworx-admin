@@ -6,35 +6,38 @@
 		<div class="x_panel">
 			<div class="x_title">
 				<h2>
-					Compañias <small>Listar</small>
+					Company <small>List</small>
 				</h2>
 				<ul class="nav navbar-right panel_toolbox">
-					<li><a href="{{route('companies/create')}}">Nuevo registro <i class="fa fa-plus"></i></a></li>
+					@if(session('admin.isSuperAdmin'))<li><a href="{{route('companies/create')}}">New record <i class="fa fa-plus"></i></a></li>@endif
 				</ul>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
 				@if (isset($companies))
-				<table id="datatable-buttons"
-					class="table table-striped table-bordered">
+				<table id="datatable-buttons" class="table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>Nombre</th>
-							<th>Categoria</th>
-							<th>Acciones</th>
+							<th>Name</th>
+							<th>Category</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						@foreach($companies as $company)
 						<tr style="height: 40px;">
-							<td>{{ $company['name'] }}</td>
+							<td><a href="{{route('companies/details', $company['id'])}}" title="Details" class="icon-table">{{ $company['name'] }}</a></td>
 							<td>{{ $company['category'] }}</td>
-							<td><a href="{{route('companies/details', $company['id'])}}"
-								title="Detalles" class="icon-table"><i class="fa fa-search"></i></a>
-								<a href="{{route('companies/edit', $company['id'])}}"
-								title="Editar" class="icon-table"><i class="fa fa-edit"></i></a>
-								<a href="{{route('companies/delete', $company['id'])}}"
-								title="Eliminar" class="icon-table"><i class="fa fa-trash"></i></a>
+							<td>
+								<a href="{{route('companies/details', $company['id'])}}" title="Details" class="icon-table">
+									<i class="fa fa-search"></i>
+								</a>
+								<a href="{{route('companies/edit', $company['id'])}}" title="Edit" class="icon-table">
+									<i class="fa fa-edit"></i>
+								</a>
+								<a href="{{route('companies/delete', $company['id'])}}" title="Delete" class="icon-table">
+									<i class="fa fa-trash"></i>
+								</a>
 							</td>
 						</tr>
 						@endforeach
