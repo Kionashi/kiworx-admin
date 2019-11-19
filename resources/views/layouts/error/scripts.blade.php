@@ -10,4 +10,4 @@
 @yield('extended-scripts')
 
 <!-- Custom Theme Scripts -->
-<script src="{{ asset('gentelella/build/js/custom.min.js') }}"></script>
+<!-- <script src="{{ asset('gentelella/build/js/custom.min.js') }}"></script> -->
