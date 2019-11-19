@@ -42,11 +42,15 @@
 				</ul>
 			</li>
 			@endif
-			
+			@if(session('admin.isSuperAdmin'))
 			<li>
 				<a href="{{route('companies')}}"><i class="fa fa-desktop"></i> Company</a>
 			</li>
-			
+			@else
+			<li>
+				<a href="{{route('companies/details', session('admin.company_id'))}}"><i class="fa fa-desktop"></i> Company</a>
+			</li>
+			@endif
 			<li>
 				<a href="{{route('offers')}}"><i class="fa fa-table"></i> Jobs</a>
 			</li>

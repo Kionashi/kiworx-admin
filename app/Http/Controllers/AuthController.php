@@ -97,6 +97,7 @@ class AuthController extends Controller
                 'admin.name' => $response->adminUser->name,
                 'admin.lastname' => $response->adminUser->lastname,
                 'admin.permissions' => $response->adminUser->role->permissions,
+                'admin.company_id' => $response->adminUser->company_id,
                 'admin.isSuperAdmin' => $isAdmin,
                 'api-token' => $response->token
             ]);

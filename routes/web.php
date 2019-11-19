@@ -90,5 +90,5 @@ Route::post('/{company}/jobs/{code}', 'OffersController@storeApplyment')->name('
 
 //Test
 Route::get('/test', 'TestsController@index')->name('test');
-Route::post('/test-post', 'TestsController@testPost')->name('test-post');
+Route::post('/test/submit', 'TestsController@submitTest')->name('test');
 
