@@ -137,7 +137,9 @@
     						@endforeach
     					</div>
     				</div>
+    				<div id="error" class="error"></div>
     			</div>
+    			
     			<!-- End SmartWizard Content -->
 			</form>
 		</div>
@@ -211,6 +213,9 @@
     .headers {
         padding: 0.5em;
     }
+    .error {
+        color: red;
+    }
     @media (max-width: 600px) {
         .questions-form {
             width: 100%;
@@ -270,6 +275,28 @@ $(document).ready(function() {
         if(stepnumber == 1){
             // Your step validation logic
             // set isStepValid = false if has errors
+            isStepValid = $('input[name=answer1]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer2]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer3]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer4]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer5]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer6]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer7]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer8]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer9]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer10]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer11]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer12]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer13]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer14]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer15]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+//             isStepValid = $('input[name=answer16]:checked', '#questionForm').val() === 'undefined' ? false: isStepValid;
+            
+        }
+        if (!isStepValid) {
+            $('#error').html('Please answer all questions');
+        } else {
+        	$('#error').html('');
         }
         return isStepValid;
     }
